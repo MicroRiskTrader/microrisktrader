@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>MicroRiskTrader — Futures Risk Calculator</title>
 
 <style>
@@ -10,19 +11,50 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: Inter, Arial, sans-serif;
   background: #071019;
   color: #e8eef5;
   min-height: 100vh;
 }
 
+/* =========================
+   TOP BANNER
+========================= */
+
+.top-banner {
+  width: 100%;
+  background: #050505;
+  overflow: hidden;
+  border-bottom: 1px solid #2c2413;
+}
+
+.top-banner img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+  object-fit: cover;
+}
+
+/* =========================
+   MAIN WRAPPER
+========================= */
+
 .wrap {
   max-width: 1250px;
-  margin: auto;
+  margin: 0 auto;
   padding: 28px 18px 45px;
 }
+
+/* =========================
+   HEADER
+========================= */
 
 header {
   display: flex;
@@ -35,6 +67,7 @@ header {
 .brand {
   font-size: 30px;
   font-weight: 800;
+  letter-spacing: .3px;
 }
 
 .subtitle {
@@ -42,6 +75,10 @@ header {
   margin-top: 5px;
   font-size: 14px;
 }
+
+/* =========================
+   TARGET RISK BOX
+========================= */
 
 .risk-box {
   background: #0e1a25;
@@ -62,23 +99,33 @@ header {
   width: 100%;
   border: 1px solid #314656;
   background: #071019;
-  color: white;
+  color: #fff;
   border-radius: 8px;
   padding: 9px 10px;
   font-size: 18px;
   font-weight: 700;
+  outline: none;
 }
+
+/* =========================
+   CALCULATOR CARD
+========================= */
 
 .table-card {
   background: #0c1721;
   border: 1px solid #223342;
   border-radius: 14px;
   overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0,0,0,.22);
 }
 
 .table-scroll {
   overflow-x: auto;
 }
+
+/* =========================
+   TABLE
+========================= */
 
 table {
   width: 100%;
@@ -90,6 +137,8 @@ th {
   background: #132230;
   color: #aebdcc;
   font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .35px;
   padding: 14px 10px;
   border-bottom: 1px solid #263847;
   white-space: nowrap;
@@ -99,12 +148,26 @@ td {
   padding: 10px;
   border-bottom: 1px solid #1d2c39;
   text-align: center;
+  font-variant-numeric: tabular-nums;
 }
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* =========================
+   INSTRUMENT
+========================= */
 
 .instrument {
   font-weight: 800;
+  color: #fff;
   font-size: 15px;
 }
+
+/* =========================
+   INPUT CELLS
+========================= */
 
 .input-cell {
   background: #243b16;
@@ -122,11 +185,20 @@ input.target {
   text-align: right;
   font-size: 14px;
   font-weight: 700;
+  outline: none;
 }
 
 input.target {
   background: #ffe680;
 }
+
+input:focus {
+  box-shadow: 0 0 0 2px rgba(130,190,55,.28);
+}
+
+/* =========================
+   RESULTS
+========================= */
 
 .result {
   color: #dce7ef;
@@ -136,6 +208,7 @@ input.target {
 .micros {
   font-size: 18px;
   font-weight: 900;
+  color: #8ed34f;
 }
 
 .actual {
@@ -147,6 +220,10 @@ input.target {
   font-size: 15px;
   font-weight: 800;
 }
+
+/* =========================
+   LONG / SHORT
+========================= */
 
 .direction {
   display: inline-block;
@@ -167,12 +244,17 @@ input.target {
   background: rgba(248,81,73,.12);
 }
 
+/* =========================
+   NOTE + RESET
+========================= */
+
 .note {
   display: flex;
   justify-content: space-between;
+  gap: 15px;
   color: #8294a5;
   font-size: 12px;
-  padding: 14px 4px;
+  padding: 14px 4px 0;
 }
 
 .reset {
@@ -185,7 +267,20 @@ input.target {
   font-weight: 700;
 }
 
+.reset:hover {
+  background: #162533;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
 @media (max-width: 700px) {
+
+  .top-banner img {
+    max-height: 250px;
+  }
+
   header {
     align-items: stretch;
     flex-direction: column;
@@ -208,346 +303,665 @@ input.target {
 
 <body>
 
+<!-- =========================
+     TOP BANNER
+========================= -->
+
+<div class="top-banner">
+  <img
+    src="New_Anuj_Cover.png"
+    alt="MicroRiskTrader Futures Trading Desk"
+  >
+</div>
+
+
+<!-- =========================
+     MAIN CONTENT
+========================= -->
+
 <div class="wrap">
 
-<header>
+  <header>
 
-<div>
-  <div class="brand">MicroRiskTrader</div>
-  <div class="subtitle">
-    Futures Risk & Position Size Calculator · TP 1:2
+    <div>
+      <div class="brand">
+        MicroRiskTrader
+      </div>
+
+      <div class="subtitle">
+        Futures Risk & Position Size Calculator · TP 1:2
+      </div>
+    </div>
+
+
+    <!-- GLOBAL TARGET RISK -->
+
+    <div class="risk-box">
+
+      <label for="globalRisk">
+        Default Target Risk ($)
+      </label>
+
+      <input
+        id="globalRisk"
+        type="number"
+        min="0"
+        step="0.01"
+        value="500"
+      >
+
+    </div>
+
+  </header>
+
+
+  <!-- =========================
+       CALCULATOR TABLE
+  ========================= -->
+
+  <div class="table-card">
+
+    <div class="table-scroll">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>
+              Instrument
+            </th>
+
+            <th>
+              Entry Price
+            </th>
+
+            <th>
+              SL Price
+            </th>
+
+            <th>
+              Target Risk ($)
+            </th>
+
+            <th>
+              Price Distance
+            </th>
+
+            <th>
+              $ / 1 Point
+            </th>
+
+            <th>
+              Risk / 1 Micro
+            </th>
+
+            <th>
+              Micros
+            </th>
+
+            <th>
+              Actual Risk
+            </th>
+
+            <th>
+              TP 1:2
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody id="rows"></tbody>
+
+      </table>
+
+    </div>
+
   </div>
-</div>
 
-<div class="risk-box">
-  <label>Default Target Risk ($)</label>
-  <input id="globalRisk" type="number" min="0" step="0.01" value="500">
-</div>
 
-</header>
+  <!-- =========================
+       NOTE
+  ========================= -->
 
-<div class="table-card">
+  <div class="note">
 
-<div class="table-scroll">
+    <div>
+      Enter only Entry, SL and Target Risk.
+      Micros, Actual Risk and TP are automatic.
+    </div>
 
-<table>
+    <button
+      class="reset"
+      id="resetBtn"
+    >
+      Reset Inputs
+    </button>
 
-<thead>
-<tr>
-<th>Instrument</th>
-<th>Entry Price</th>
-<th>SL Price</th>
-<th>Target Risk ($)</th>
-<th>Price Distance</th>
-<th>$ / 1 Point</th>
-<th>Risk / 1 Micro</th>
-<th>Micros</th>
-<th>Actual Risk</th>
-<th>TP 1:2</th>
-</tr>
-</thead>
-
-<tbody id="rows"></tbody>
-
-</table>
-
-</div>
-</div>
-
-<div class="note">
-
-<div>
-Enter Entry, SL and Target Risk. Everything else calculates automatically.
-</div>
-
-<button class="reset" id="resetBtn">
-Reset Inputs
-</button>
+  </div>
 
 </div>
 
-</div>
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
 
 <script>
 
 const contracts = [
 
-{
-name: "MNQ",
-multiplier: 2,
-decimals: 2,
-entry: 29563.50,
-sl: 29534.05
-},
+  {
+    name: "MNQ",
+    multiplier: 2,
+    decimals: 2,
+    entry: 29563.50,
+    sl: 29534.05
+  },
 
-{
-name: "MES",
-multiplier: 5,
-decimals: 2,
-entry: 7690.75,
-sl: 7708.00
-},
+  {
+    name: "MES",
+    multiplier: 5,
+    decimals: 2,
+    entry: 7690.75,
+    sl: 7708.00
+  },
 
-{
-name: "MGC",
-multiplier: 10,
-decimals: 2,
-entry: 4404.20,
-sl: 4395.00
-},
+  {
+    name: "MGC",
+    multiplier: 10,
+    decimals: 2,
+    entry: 4404.20,
+    sl: 4395.00
+  },
 
-{
-name: "MYM",
-multiplier: 0.5,
-decimals: 0,
-entry: 52882,
-sl: 52920
-},
+  {
+    name: "MYM",
+    multiplier: 0.5,
+    decimals: 0,
+    entry: 52882,
+    sl: 52920
+  },
 
-{
-name: "MCL",
-multiplier: 100,
-decimals: 2,
-entry: 94.30,
-sl: 94.66
-}
+  {
+    name: "MCL",
+    multiplier: 100,
+    decimals: 2,
+    entry: 94.30,
+    sl: 94.66
+  }
 
 ];
 
-const rows = document.getElementById("rows");
-const globalRisk = document.getElementById("globalRisk");
+
+const rows =
+  document.getElementById("rows");
+
+const globalRisk =
+  document.getElementById("globalRisk");
+
+
+/* =========================
+   FORMAT MONEY
+========================= */
 
 function money(n) {
 
-return "$" + n.toLocaleString("en-US", {
-minimumFractionDigits: 2,
-maximumFractionDigits: 2
-});
+  return "$" + n.toLocaleString(
+    "en-US",
+    {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }
+  );
 
 }
+
+
+/* =========================
+   FORMAT NUMBER
+========================= */
 
 function num(n, decimals = 2) {
 
-return n.toLocaleString("en-US", {
-minimumFractionDigits: decimals,
-maximumFractionDigits: decimals
-});
+  return n.toLocaleString(
+    "en-US",
+    {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    }
+  );
 
 }
+
+
+/* =========================
+   FORMAT PRICE
+========================= */
 
 function price(n, decimals) {
 
-return n.toLocaleString("en-US", {
-minimumFractionDigits: decimals,
-maximumFractionDigits: decimals
-});
+  return n.toLocaleString(
+    "en-US",
+    {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    }
+  );
 
 }
+
+
+/* =========================
+   RENDER TABLE
+========================= */
 
 function render() {
 
-rows.innerHTML = "";
+  rows.innerHTML = "";
 
-contracts.forEach((c, i) => {
 
-const tr = document.createElement("tr");
+  contracts.forEach((c, i) => {
 
-tr.dataset.i = i;
+    const tr =
+      document.createElement("tr");
 
-tr.innerHTML = `
 
-<td>
+    tr.dataset.i = i;
 
-<div class="instrument">${c.name}</div>
 
-<div class="direction" id="dir-${i}">
-—
-</div>
+    tr.innerHTML = `
 
-</td>
+      <td>
 
-<td class="input-cell">
+        <div class="instrument">
+          ${c.name}
+        </div>
 
-<input
-class="price entry"
-type="number"
-step="any"
-value="${c.entry}"
-data-i="${i}"
->
+        <div
+          class="direction"
+          id="dir-${i}"
+        >
+          —
+        </div>
 
-</td>
+      </td>
 
-<td class="input-cell">
 
-<input
-class="price sl"
-type="number"
-step="any"
-value="${c.sl}"
-data-i="${i}"
->
+      <td class="input-cell">
 
-</td>
+        <input
+          class="price entry"
+          type="number"
+          step="any"
+          value="${c.entry}"
+          data-i="${i}"
+        >
 
-<td class="input-cell">
+      </td>
 
-<input
-class="target risk"
-type="number"
-min="0"
-step="0.01"
-value="500"
-data-i="${i}"
->
 
-</td>
+      <td class="input-cell">
 
-<td class="result" id="dist-${i}">
-—
-</td>
+        <input
+          class="price sl"
+          type="number"
+          step="any"
+          value="${c.sl}"
+          data-i="${i}"
+        >
 
-<td class="result">
-${money(c.multiplier)}
-</td>
+      </td>
 
-<td class="result" id="rpm-${i}">
-—
-</td>
 
-<td class="micros" id="micros-${i}">
-—
-</td>
+      <td class="input-cell">
 
-<td class="actual" id="actual-${i}">
-—
-</td>
+        <input
+          class="target risk"
+          type="number"
+          min="0"
+          step="0.01"
+          value="500"
+          data-i="${i}"
+        >
 
-<td class="tp" id="tp-${i}">
-—
-</td>
+      </td>
 
-`;
 
-rows.appendChild(tr);
+      <td
+        class="result"
+        id="dist-${i}"
+      >
+        —
+      </td>
 
-});
 
-document.querySelectorAll("input").forEach(el => {
+      <td class="result">
 
-el.addEventListener("input", calculateAll);
+        ${money(c.multiplier)}
 
-});
+      </td>
 
-calculateAll();
+
+      <td
+        class="result"
+        id="rpm-${i}"
+      >
+        —
+      </td>
+
+
+      <td
+        class="micros"
+        id="micros-${i}"
+      >
+        —
+      </td>
+
+
+      <td
+        class="actual"
+        id="actual-${i}"
+      >
+        —
+      </td>
+
+
+      <td
+        class="tp"
+        id="tp-${i}"
+      >
+        —
+      </td>
+
+    `;
+
+
+    rows.appendChild(tr);
+
+  });
+
+
+  document
+    .querySelectorAll("input")
+    .forEach(el => {
+
+      el.addEventListener(
+        "input",
+        calculateAll
+      );
+
+    });
+
+
+  calculateAll();
 
 }
+
+
+/* =========================
+   CALCULATE EVERYTHING
+========================= */
 
 function calculateAll() {
 
-document.querySelectorAll("tr[data-i]").forEach(tr => {
+  const target =
+    parseFloat(globalRisk.value) || 0;
 
-const i = Number(tr.dataset.i);
 
-const c = contracts[i];
+  document
+    .querySelectorAll("tr[data-i]")
+    .forEach(tr => {
 
-const entry =
-parseFloat(tr.querySelector(".entry").value);
+      const i =
+        Number(tr.dataset.i);
 
-const sl =
-parseFloat(tr.querySelector(".sl").value);
 
-const risk =
-parseFloat(tr.querySelector(".risk").value) || 0;
+      const c =
+        contracts[i];
 
-if (!Number.isFinite(entry) || !Number.isFinite(sl))
-return;
 
-const distance = Math.abs(entry - sl);
+      const entryEl =
+        tr.querySelector(".entry");
 
-const riskPerMicro =
-distance * c.multiplier;
 
-const micros =
-riskPerMicro > 0
-? Math.floor(risk / riskPerMicro)
-: 0;
+      const slEl =
+        tr.querySelector(".sl");
 
-const actualRisk =
-micros * riskPerMicro;
 
-let tp = entry;
+      const riskEl =
+        tr.querySelector(".risk");
 
-let direction = "—";
 
-if (sl < entry) {
+      const entry =
+        parseFloat(entryEl.value);
 
-direction = "LONG";
 
-tp = entry + distance * 2;
+      const sl =
+        parseFloat(slEl.value);
+
+
+      if (
+        !Number.isFinite(entry) ||
+        !Number.isFinite(sl)
+      ) {
+
+        return;
+
+      }
+
+
+      /*
+        Keep Target Risk synced
+        with the main Target Risk box
+      */
+
+      if (
+        document.activeElement !== riskEl &&
+        (
+          riskEl.value === "" ||
+          riskEl.value === "500"
+        )
+      ) {
+
+        riskEl.value = target;
+
+      }
+
+
+      const risk =
+        parseFloat(riskEl.value) || 0;
+
+
+      /*
+        Price Distance
+      */
+
+      const distance =
+        Math.abs(entry - sl);
+
+
+      /*
+        Risk per Micro
+      */
+
+      const riskPerMicro =
+        distance * c.multiplier;
+
+
+      /*
+        Micros
+
+        FLOOR is used so Actual Risk
+        never exceeds Target Risk.
+      */
+
+      const micros =
+        riskPerMicro > 0
+          ? Math.floor(
+              risk / riskPerMicro
+            )
+          : 0;
+
+
+      /*
+        Actual Risk
+      */
+
+      const actualRisk =
+        micros * riskPerMicro;
+
+
+      /*
+        Direction + TP 1:2
+      */
+
+      let tp = entry;
+
+      let dir = "—";
+
+
+      if (sl < entry) {
+
+        dir = "LONG";
+
+        tp =
+          entry +
+          distance * 2;
+
+      }
+
+      else if (sl > entry) {
+
+        dir = "SHORT";
+
+        tp =
+          entry -
+          distance * 2;
+
+      }
+
+
+      /*
+        Update values
+      */
+
+      document
+        .getElementById(`dist-${i}`)
+        .textContent =
+        num(
+          distance,
+          c.decimals
+        );
+
+
+      document
+        .getElementById(`rpm-${i}`)
+        .textContent =
+        money(
+          riskPerMicro
+        );
+
+
+      document
+        .getElementById(`micros-${i}`)
+        .textContent =
+        micros;
+
+
+      document
+        .getElementById(`actual-${i}`)
+        .textContent =
+        money(
+          actualRisk
+        );
+
+
+      document
+        .getElementById(`tp-${i}`)
+        .textContent =
+        price(
+          tp,
+          c.decimals
+        );
+
+
+      /*
+        Direction badge
+      */
+
+      const dirEl =
+        document.getElementById(
+          `dir-${i}`
+        );
+
+
+      dirEl.textContent = dir;
+
+
+      dirEl.className =
+        "direction " +
+        (
+          dir === "LONG"
+            ? "long"
+            : dir === "SHORT"
+              ? "short"
+              : ""
+        );
+
+    });
 
 }
 
-else if (sl > entry) {
 
-direction = "SHORT";
+/* =========================
+   GLOBAL TARGET RISK
+========================= */
 
-tp = entry - distance * 2;
+globalRisk.addEventListener(
+  "input",
+  () => {
 
-}
+    document
+      .querySelectorAll(".risk")
+      .forEach(el => {
 
-document.getElementById(`dist-${i}`)
-.textContent = num(distance, c.decimals);
+        el.value =
+          globalRisk.value;
 
-document.getElementById(`rpm-${i}`)
-.textContent = money(riskPerMicro);
+      });
 
-document.getElementById(`micros-${i}`)
-.textContent = micros;
 
-document.getElementById(`actual-${i}`)
-.textContent = money(actualRisk);
+    calculateAll();
 
-document.getElementById(`tp-${i}`)
-.textContent = price(tp, c.decimals);
+  }
+);
 
-const dir =
-document.getElementById(`dir-${i}`);
 
-dir.textContent = direction;
+/* =========================
+   RESET
+========================= */
 
-dir.className =
-"direction " +
-(direction === "LONG"
-? "long"
-: direction === "SHORT"
-? "short"
-: "");
+document
+  .getElementById("resetBtn")
+  .addEventListener(
+    "click",
+    () => {
 
-});
+      globalRisk.value = 500;
 
-}
+      render();
 
-globalRisk.addEventListener("input", () => {
+    }
+  );
 
-document.querySelectorAll(".risk").forEach(el => {
 
-el.value = globalRisk.value;
-
-});
-
-calculateAll();
-
-});
-
-document.getElementById("resetBtn")
-.addEventListener("click", () => {
-
-globalRisk.value = 500;
-
-render();
-
-});
+/* =========================
+   START
+========================= */
 
 render();
 
