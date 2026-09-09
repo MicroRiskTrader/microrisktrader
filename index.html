@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MicroRiskTrader — Futures Risk Calculator</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #071019;
+  color: #e8eef5;
+  min-height: 100vh;
+}
+
+.wrap {
+  max-width: 1250px;
+  margin: auto;
+  padding: 28px 18px 45px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.brand {
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.subtitle {
+  color: #8fa1b3;
+  margin-top: 5px;
+  font-size: 14px;
+}
+
+.risk-box {
+  background: #0e1a25;
+  border: 1px solid #223342;
+  border-radius: 12px;
+  padding: 12px 14px;
+  min-width: 190px;
+}
+
+.risk-box label {
+  display: block;
+  font-size: 12px;
+  color: #8fa1b3;
+  margin-bottom: 6px;
+}
+
+.risk-box input {
+  width: 100%;
+  border: 1px solid #314656;
+  background: #071019;
+  color: white;
+  border-radius: 8px;
+  padding: 9px 10px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.table-card {
+  background: #0c1721;
+  border: 1px solid #223342;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 1060px;
+  border-collapse: collapse;
+}
+
+th {
+  background: #132230;
+  color: #aebdcc;
+  font-size: 12px;
+  padding: 14px 10px;
+  border-bottom: 1px solid #263847;
+  white-space: nowrap;
+}
+
+td {
+  padding: 10px;
+  border-bottom: 1px solid #1d2c39;
+  text-align: center;
+}
+
+.instrument {
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.input-cell {
+  background: #243b16;
+  min-width: 145px;
+}
+
+input.price,
+input.target {
+  width: 100%;
+  border: 1px solid #6a8a32;
+  background: #fff1a8;
+  color: #111;
+  border-radius: 7px;
+  padding: 10px 8px;
+  text-align: right;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+input.target {
+  background: #ffe680;
+}
+
+.result {
+  color: #dce7ef;
+  font-weight: 600;
+}
+
+.micros {
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.actual {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.tp {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.direction {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.long {
+  color: #7ee787;
+  background: rgba(46,160,67,.14);
+}
+
+.short {
+  color: #ff9b9b;
+  background: rgba(248,81,73,.12);
+}
+
+.note {
+  display: flex;
+  justify-content: space-between;
+  color: #8294a5;
+  font-size: 12px;
+  padding: 14px 4px;
+}
+
+.reset {
+  border: 1px solid #304556;
+  background: #0e1a25;
+  color: #c8d4df;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+@media (max-width: 700px) {
+  header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .risk-box {
+    width: 100%;
+  }
+
+  .brand {
+    font-size: 25px;
+  }
+
+  .note {
+    flex-direction: column;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<header>
+
+<div>
+  <div class="brand">MicroRiskTrader</div>
+  <div class="subtitle">
+    Futures Risk & Position Size Calculator · TP 1:2
+  </div>
+</div>
+
+<div class="risk-box">
+  <label>Default Target Risk ($)</label>
+  <input id="globalRisk" type="number" min="0" step="0.01" value="500">
+</div>
+
+</header>
+
+<div class="table-card">
+
+<div class="table-scroll">
+
+<table>
+
+<thead>
+<tr>
+<th>Instrument</th>
+<th>Entry Price</th>
+<th>SL Price</th>
+<th>Target Risk ($)</th>
+<th>Price Distance</th>
+<th>$ / 1 Point</th>
+<th>Risk / 1 Micro</th>
+<th>Micros</th>
+<th>Actual Risk</th>
+<th>TP 1:2</th>
+</tr>
+</thead>
+
+<tbody id="rows"></tbody>
+
+</table>
+
+</div>
+</div>
+
+<div class="note">
+
+<div>
+Enter Entry, SL and Target Risk. Everything else calculates automatically.
+</div>
+
+<button class="reset" id="resetBtn">
+Reset Inputs
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+const contracts = [
+
+{
+name: "MNQ",
+multiplier: 2,
+decimals: 2,
+entry: 29563.50,
+sl: 29534.05
+},
+
+{
+name: "MES",
+multiplier: 5,
+decimals: 2,
+entry: 7690.75,
+sl: 7708.00
+},
+
+{
+name: "MGC",
+multiplier: 10,
+decimals: 2,
+entry: 4404.20,
+sl: 4395.00
+},
+
+{
+name: "MYM",
+multiplier: 0.5,
+decimals: 0,
+entry: 52882,
+sl: 52920
+},
+
+{
+name: "MCL",
+multiplier: 100,
+decimals: 2,
+entry: 94.30,
+sl: 94.66
+}
+
+];
+
+const rows = document.getElementById("rows");
+const globalRisk = document.getElementById("globalRisk");
+
+function money(n) {
+
+return "$" + n.toLocaleString("en-US", {
+minimumFractionDigits: 2,
+maximumFractionDigits: 2
+});
+
+}
+
+function num(n, decimals = 2) {
+
+return n.toLocaleString("en-US", {
+minimumFractionDigits: decimals,
+maximumFractionDigits: decimals
+});
+
+}
+
+function price(n, decimals) {
+
+return n.toLocaleString("en-US", {
+minimumFractionDigits: decimals,
+maximumFractionDigits: decimals
+});
+
+}
+
+function render() {
+
+rows.innerHTML = "";
+
+contracts.forEach((c, i) => {
+
+const tr = document.createElement("tr");
+
+tr.dataset.i = i;
+
+tr.innerHTML = `
+
+<td>
+
+<div class="instrument">${c.name}</div>
+
+<div class="direction" id="dir-${i}">
+—
+</div>
+
+</td>
+
+<td class="input-cell">
+
+<input
+class="price entry"
+type="number"
+step="any"
+value="${c.entry}"
+data-i="${i}"
+>
+
+</td>
+
+<td class="input-cell">
+
+<input
+class="price sl"
+type="number"
+step="any"
+value="${c.sl}"
+data-i="${i}"
+>
+
+</td>
+
+<td class="input-cell">
+
+<input
+class="target risk"
+type="number"
+min="0"
+step="0.01"
+value="500"
+data-i="${i}"
+>
+
+</td>
+
+<td class="result" id="dist-${i}">
+—
+</td>
+
+<td class="result">
+${money(c.multiplier)}
+</td>
+
+<td class="result" id="rpm-${i}">
+—
+</td>
+
+<td class="micros" id="micros-${i}">
+—
+</td>
+
+<td class="actual" id="actual-${i}">
+—
+</td>
+
+<td class="tp" id="tp-${i}">
+—
+</td>
+
+`;
+
+rows.appendChild(tr);
+
+});
+
+document.querySelectorAll("input").forEach(el => {
+
+el.addEventListener("input", calculateAll);
+
+});
+
+calculateAll();
+
+}
+
+function calculateAll() {
+
+document.querySelectorAll("tr[data-i]").forEach(tr => {
+
+const i = Number(tr.dataset.i);
+
+const c = contracts[i];
+
+const entry =
+parseFloat(tr.querySelector(".entry").value);
+
+const sl =
+parseFloat(tr.querySelector(".sl").value);
+
+const risk =
+parseFloat(tr.querySelector(".risk").value) || 0;
+
+if (!Number.isFinite(entry) || !Number.isFinite(sl))
+return;
+
+const distance = Math.abs(entry - sl);
+
+const riskPerMicro =
+distance * c.multiplier;
+
+const micros =
+riskPerMicro > 0
+? Math.floor(risk / riskPerMicro)
+: 0;
+
+const actualRisk =
+micros * riskPerMicro;
+
+let tp = entry;
+
+let direction = "—";
+
+if (sl < entry) {
+
+direction = "LONG";
+
+tp = entry + distance * 2;
+
+}
+
+else if (sl > entry) {
+
+direction = "SHORT";
+
+tp = entry - distance * 2;
+
+}
+
+document.getElementById(`dist-${i}`)
+.textContent = num(distance, c.decimals);
+
+document.getElementById(`rpm-${i}`)
+.textContent = money(riskPerMicro);
+
+document.getElementById(`micros-${i}`)
+.textContent = micros;
+
+document.getElementById(`actual-${i}`)
+.textContent = money(actualRisk);
+
+document.getElementById(`tp-${i}`)
+.textContent = price(tp, c.decimals);
+
+const dir =
+document.getElementById(`dir-${i}`);
+
+dir.textContent = direction;
+
+dir.className =
+"direction " +
+(direction === "LONG"
+? "long"
+: direction === "SHORT"
+? "short"
+: "");
+
+});
+
+}
+
+globalRisk.addEventListener("input", () => {
+
+document.querySelectorAll(".risk").forEach(el => {
+
+el.value = globalRisk.value;
+
+});
+
+calculateAll();
+
+});
+
+document.getElementById("resetBtn")
+.addEventListener("click", () => {
+
+globalRisk.value = 500;
+
+render();
+
+});
+
+render();
+
+</script>
+
+</body>
+</html>
