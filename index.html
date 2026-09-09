@@ -4,343 +4,1030 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MicroRiskTrader — Futures Risk Calculator</title>
+<meta name="description" content="MicroRiskTrader Futures Risk & Position Size Calculator">
+
+<title>MicroRiskTrader | Futures Risk Calculator</title>
 
 <style>
-* {
-  box-sizing: border-box;
+
+:root{
+  --bg:#05080d;
+  --panel:#0a1119;
+  --panel2:#0d1721;
+  --line:#1d2b38;
+  --line2:#293b4b;
+
+  --text:#f3f6f8;
+  --muted:#8192a3;
+
+  --gold:#d7aa3a;
+  --gold2:#f0c75e;
+  --gold-soft:rgba(215,170,58,.12);
+
+  --green:#75d04a;
+  --green-soft:rgba(117,208,74,.11);
+
+  --red:#ff7777;
+  --red-soft:rgba(255,119,119,.10);
 }
 
-html {
-  scroll-behavior: smooth;
+
+*{
+  box-sizing:border-box;
 }
 
-body {
-  margin: 0;
-  font-family: Inter, Arial, sans-serif;
-  background: #071019;
-  color: #e8eef5;
-  min-height: 100vh;
+
+html{
+  scroll-behavior:smooth;
 }
 
-/* =========================
+
+body{
+  margin:0;
+
+  font-family:
+    Inter,
+    Segoe UI,
+    Arial,
+    sans-serif;
+
+  background:
+    radial-gradient(
+      circle at 50% -10%,
+      rgba(215,170,58,.08),
+      transparent 34%
+    ),
+    var(--bg);
+
+  color:var(--text);
+
+  min-height:100vh;
+}
+
+
+/* =====================================
    TOP BANNER
-========================= */
+===================================== */
 
-.top-banner {
-  width: 100%;
-  background: #050505;
-  overflow: hidden;
-  border-bottom: 1px solid #2c2413;
+.top-banner{
+  width:100%;
+
+  background:#000;
+
+  border-bottom:
+    1px solid #2b2414;
+
+  overflow:hidden;
 }
 
-.top-banner img {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-height: 420px;
-  object-fit: cover;
+
+.top-banner img{
+  display:block;
+
+  width:100%;
+
+  max-height:330px;
+
+  object-fit:cover;
+
+  object-position:center;
 }
 
-/* =========================
+
+/* =====================================
+   NAVIGATION
+===================================== */
+
+.nav{
+  height:58px;
+
+  border-bottom:
+    1px solid var(--line);
+
+  background:
+    rgba(5,8,13,.94);
+
+  display:flex;
+
+  align-items:center;
+
+  position:sticky;
+
+  top:0;
+
+  z-index:20;
+
+  backdrop-filter:blur(12px);
+}
+
+
+.nav-inner{
+  width:
+    min(
+      1180px,
+      calc(100% - 36px)
+    );
+
+  margin:auto;
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+}
+
+
+.logo{
+  font-weight:900;
+
+  letter-spacing:.5px;
+
+  font-size:16px;
+}
+
+
+.logo span{
+  color:var(--gold2);
+}
+
+
+.nav-right{
+  display:flex;
+
+  gap:22px;
+
+  color:var(--muted);
+
+  font-size:10px;
+
+  font-weight:800;
+
+  letter-spacing:.8px;
+}
+
+
+/* =====================================
    MAIN WRAPPER
-========================= */
+===================================== */
 
-.wrap {
-  max-width: 1250px;
-  margin: 0 auto;
-  padding: 28px 18px 45px;
+.wrap{
+  width:
+    min(
+      1180px,
+      calc(100% - 36px)
+    );
+
+  margin:auto;
+
+  padding:
+    42px 0 60px;
 }
 
-/* =========================
-   HEADER
-========================= */
 
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 20px;
-  margin-bottom: 22px;
+/* =====================================
+   HERO
+===================================== */
+
+.hero{
+  display:flex;
+
+  justify-content:space-between;
+
+  gap:30px;
+
+  align-items:flex-end;
+
+  margin-bottom:28px;
 }
 
-.brand {
-  font-size: 30px;
-  font-weight: 800;
-  letter-spacing: .3px;
+
+.eyebrow{
+  color:var(--gold2);
+
+  font-size:11px;
+
+  font-weight:900;
+
+  letter-spacing:2px;
+
+  text-transform:uppercase;
+
+  margin-bottom:10px;
 }
 
-.subtitle {
-  color: #8fa1b3;
-  margin-top: 5px;
-  font-size: 14px;
+
+h1{
+  margin:0;
+
+  font-size:
+    clamp(
+      30px,
+      4vw,
+      48px
+    );
+
+  line-height:1.02;
+
+  letter-spacing:-1.4px;
 }
 
-/* =========================
-   TARGET RISK BOX
-========================= */
 
-.risk-box {
-  background: #0e1a25;
-  border: 1px solid #223342;
-  border-radius: 12px;
-  padding: 12px 14px;
-  min-width: 190px;
+.hero p{
+  margin:
+    13px 0 0;
+
+  color:var(--muted);
+
+  font-size:14px;
 }
 
-.risk-box label {
-  display: block;
-  font-size: 12px;
-  color: #8fa1b3;
-  margin-bottom: 6px;
+
+/* =====================================
+   TARGET RISK CARD
+===================================== */
+
+.risk-card{
+  width:240px;
+
+  flex:none;
+
+  padding:15px;
+
+  border:
+    1px solid #4b3a18;
+
+  border-radius:14px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #15130e,
+      #0a1119
+    );
+
+  box-shadow:
+    0 12px 35px
+    rgba(0,0,0,.25);
 }
 
-.risk-box input {
-  width: 100%;
-  border: 1px solid #314656;
-  background: #071019;
-  color: #fff;
-  border-radius: 8px;
-  padding: 9px 10px;
-  font-size: 18px;
-  font-weight: 700;
-  outline: none;
+
+.risk-label{
+  color:#bca76f;
+
+  font-size:10px;
+
+  font-weight:800;
+
+  letter-spacing:1px;
+
+  text-transform:uppercase;
+
+  margin-bottom:8px;
 }
 
-/* =========================
-   CALCULATOR CARD
-========================= */
 
-.table-card {
-  background: #0c1721;
-  border: 1px solid #223342;
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: 0 15px 40px rgba(0,0,0,.22);
+.risk-input{
+  display:flex;
+
+  align-items:center;
+
+  gap:8px;
 }
 
-.table-scroll {
-  overflow-x: auto;
+
+.risk-input span{
+  color:var(--gold2);
+
+  font-size:20px;
+
+  font-weight:900;
 }
 
-/* =========================
-   TABLE
-========================= */
 
-table {
-  width: 100%;
-  min-width: 1060px;
-  border-collapse: collapse;
+.risk-input input{
+  width:100%;
+
+  background:transparent;
+
+  border:0;
+
+  outline:0;
+
+  color:white;
+
+  font-size:25px;
+
+  font-weight:900;
 }
 
-th {
-  background: #132230;
-  color: #aebdcc;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: .35px;
-  padding: 14px 10px;
-  border-bottom: 1px solid #263847;
-  white-space: nowrap;
+
+/* =====================================
+   CONTRACT CARDS
+===================================== */
+
+.stats{
+  display:grid;
+
+  grid-template-columns:
+    repeat(5,1fr);
+
+  gap:10px;
+
+  margin-bottom:18px;
 }
 
-td {
-  padding: 10px;
-  border-bottom: 1px solid #1d2c39;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
+
+.stat{
+  border:
+    1px solid var(--line);
+
+  background:
+    linear-gradient(
+      145deg,
+      #0c151e,
+      #081018
+    );
+
+  border-radius:12px;
+
+  padding:
+    13px 14px;
+
+  transition:
+    transform .2s ease,
+    border-color .2s ease;
 }
 
-tbody tr:last-child td {
-  border-bottom: 0;
+
+.stat:hover{
+  transform:
+    translateY(-2px);
+
+  border-color:
+    #4d401f;
 }
 
-/* =========================
+
+.stat-symbol{
+  font-size:14px;
+
+  font-weight:900;
+
+  color:white;
+}
+
+
+.stat-desc{
+  margin-top:5px;
+
+  color:var(--muted);
+
+  font-size:11px;
+}
+
+
+.stat-value{
+  margin-top:7px;
+
+  color:var(--gold2);
+
+  font-size:12px;
+
+  font-weight:800;
+}
+
+
+/* =====================================
+   SECTION HEADER
+===================================== */
+
+.section-head{
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  margin:
+    34px 0 12px;
+}
+
+
+.section-title{
+  font-size:17px;
+
+  font-weight:900;
+}
+
+
+.section-sub{
+  color:var(--muted);
+
+  font-size:11px;
+
+  margin-top:4px;
+}
+
+
+/* =====================================
+   CALCULATOR
+===================================== */
+
+.calculator{
+  border:
+    1px solid var(--line2);
+
+  border-radius:16px;
+
+  overflow:hidden;
+
+  background:var(--panel);
+
+  box-shadow:
+    0 18px 55px
+    rgba(0,0,0,.28);
+}
+
+
+.scroll{
+  overflow-x:auto;
+}
+
+
+table{
+  width:100%;
+
+  min-width:1120px;
+
+  border-collapse:collapse;
+}
+
+
+th{
+  text-align:center;
+
+  padding:
+    14px 10px;
+
+  background:#101c27;
+
+  color:#8295a7;
+
+  font-size:10px;
+
+  letter-spacing:.8px;
+
+  text-transform:uppercase;
+
+  border-bottom:
+    1px solid var(--line2);
+
+  white-space:nowrap;
+}
+
+
+td{
+  text-align:center;
+
+  padding:
+    12px 9px;
+
+  border-bottom:
+    1px solid var(--line);
+
+  white-space:nowrap;
+}
+
+
+tbody tr:last-child td{
+  border-bottom:0;
+}
+
+
+tbody tr:hover{
+  background:
+    rgba(255,255,255,.018);
+}
+
+
+/* =====================================
    INSTRUMENT
-========================= */
+===================================== */
 
-.instrument {
-  font-weight: 800;
-  color: #fff;
-  font-size: 15px;
+.instrument{
+  font-size:14px;
+
+  font-weight:950;
 }
 
-/* =========================
-   INPUT CELLS
-========================= */
 
-.input-cell {
-  background: #243b16;
-  min-width: 145px;
+.multiplier{
+  color:var(--muted);
+
+  font-size:10px;
+
+  margin-top:4px;
 }
 
-input.price,
-input.target {
-  width: 100%;
-  border: 1px solid #6a8a32;
-  background: #fff1a8;
-  color: #111;
-  border-radius: 7px;
-  padding: 10px 8px;
-  text-align: right;
-  font-size: 14px;
-  font-weight: 700;
-  outline: none;
+
+.badge{
+  display:inline-flex;
+
+  margin-top:6px;
+
+  padding:
+    3px 7px;
+
+  border-radius:20px;
+
+  font-size:9px;
+
+  font-weight:900;
+
+  letter-spacing:.3px;
 }
 
-input.target {
-  background: #ffe680;
+
+.long{
+  color:#9bea72;
+
+  background:
+    var(--green-soft);
 }
 
-input:focus {
-  box-shadow: 0 0 0 2px rgba(130,190,55,.28);
+
+.short{
+  color:#ff9c9c;
+
+  background:
+    var(--red-soft);
 }
 
-/* =========================
-   RESULTS
-========================= */
 
-.result {
-  color: #dce7ef;
-  font-weight: 600;
+/* =====================================
+   INPUTS
+===================================== */
+
+.input-wrap{
+  background:
+    linear-gradient(
+      90deg,
+      rgba(117,208,74,.10),
+      rgba(117,208,74,.035)
+    );
 }
 
-.micros {
-  font-size: 18px;
-  font-weight: 900;
-  color: #8ed34f;
+
+.input{
+  width:126px;
+
+  border:
+    1px solid #63822f;
+
+  background:#fff0a0;
+
+  color:#111;
+
+  border-radius:7px;
+
+  padding:
+    9px 9px;
+
+  text-align:right;
+
+  font-size:13px;
+
+  font-weight:850;
+
+  outline:none;
 }
 
-.actual {
-  font-size: 16px;
-  font-weight: 800;
+
+.input:focus{
+  border-color:
+    var(--gold2);
+
+  box-shadow:
+    0 0 0 2px
+    rgba(240,199,94,.15);
 }
 
-.tp {
-  font-size: 15px;
-  font-weight: 800;
+
+.target-input{
+  background:#ffe680;
 }
 
-/* =========================
-   LONG / SHORT
-========================= */
 
-.direction {
-  display: inline-block;
-  margin-top: 5px;
-  padding: 3px 7px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 800;
+/* =====================================
+   OUTPUTS
+===================================== */
+
+.distance{
+  font-weight:800;
 }
 
-.long {
-  color: #7ee787;
-  background: rgba(46,160,67,.14);
+
+.rpm{
+  font-weight:800;
+
+  color:#dce6ee;
 }
 
-.short {
-  color: #ff9b9b;
-  background: rgba(248,81,73,.12);
+
+.micros{
+  color:var(--green);
+
+  font-size:19px;
+
+  font-weight:950;
 }
 
-/* =========================
-   NOTE + RESET
-========================= */
 
-.note {
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
-  color: #8294a5;
-  font-size: 12px;
-  padding: 14px 4px 0;
+.actual{
+  font-size:14px;
+
+  font-weight:900;
 }
 
-.reset {
-  border: 1px solid #304556;
-  background: #0e1a25;
-  color: #c8d4df;
-  border-radius: 8px;
-  padding: 8px 12px;
-  cursor: pointer;
-  font-weight: 700;
+
+.tp{
+  color:var(--gold2);
+
+  font-size:15px;
+
+  font-weight:950;
 }
 
-.reset:hover {
-  background: #162533;
+
+/* =====================================
+   SUMMARY CARDS
+===================================== */
+
+.status-row{
+  display:grid;
+
+  grid-template-columns:
+    repeat(3,1fr);
+
+  gap:12px;
+
+  margin-top:16px;
 }
 
-/* =========================
+
+.status-card{
+  padding:15px;
+
+  border:
+    1px solid var(--line);
+
+  background:var(--panel2);
+
+  border-radius:12px;
+}
+
+
+.status-label{
+  color:var(--muted);
+
+  font-size:10px;
+
+  text-transform:uppercase;
+
+  letter-spacing:1px;
+}
+
+
+.status-value{
+  margin-top:6px;
+
+  font-size:18px;
+
+  font-weight:900;
+}
+
+
+.status-value.gold{
+  color:var(--gold2);
+}
+
+
+.status-value.green{
+  color:var(--green);
+}
+
+
+/* =====================================
+   NOTE
+===================================== */
+
+.note{
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  gap:15px;
+
+  margin-top:12px;
+
+  color:#718293;
+
+  font-size:11px;
+}
+
+
+.reset{
+  border:
+    1px solid var(--line2);
+
+  background:#0b141d;
+
+  color:#b8c6d1;
+
+  padding:
+    8px 12px;
+
+  border-radius:8px;
+
+  cursor:pointer;
+
+  font-size:11px;
+
+  font-weight:800;
+}
+
+
+.reset:hover{
+  border-color:#695323;
+
+  color:var(--gold2);
+}
+
+
+/* =====================================
+   HOW IT WORKS
+===================================== */
+
+.info-grid{
+  display:grid;
+
+  grid-template-columns:
+    repeat(3,1fr);
+
+  gap:12px;
+
+  margin-top:38px;
+}
+
+
+.info{
+  border:
+    1px solid var(--line);
+
+  border-radius:13px;
+
+  padding:20px;
+
+  background:#09111a;
+}
+
+
+.info-number{
+  color:var(--gold2);
+
+  font-size:11px;
+
+  font-weight:900;
+
+  letter-spacing:1px;
+}
+
+
+.info h3{
+  margin:
+    9px 0 7px;
+
+  font-size:14px;
+}
+
+
+.info p{
+  margin:0;
+
+  color:var(--muted);
+
+  font-size:11px;
+
+  line-height:1.6;
+}
+
+
+/* =====================================
+   FOOTER
+===================================== */
+
+footer{
+  border-top:
+    1px solid var(--line);
+
+  margin-top:45px;
+
+  padding:
+    24px 0 5px;
+
+  display:flex;
+
+  justify-content:space-between;
+
+  gap:20px;
+
+  color:#687989;
+
+  font-size:10px;
+}
+
+
+.footer-brand{
+  color:#c3ced7;
+
+  font-weight:900;
+}
+
+
+.footer-brand span{
+  color:var(--gold2);
+}
+
+
+/* =====================================
    MOBILE
-========================= */
+===================================== */
 
-@media (max-width: 700px) {
+@media(max-width:800px){
 
-  .top-banner img {
-    max-height: 250px;
+  .top-banner img{
+    max-height:250px;
   }
 
-  header {
-    align-items: stretch;
-    flex-direction: column;
+  .nav-right{
+    display:none;
   }
 
-  .risk-box {
-    width: 100%;
+  .hero{
+    flex-direction:column;
+
+    align-items:stretch;
   }
 
-  .brand {
-    font-size: 25px;
+  .risk-card{
+    width:100%;
   }
 
-  .note {
-    flex-direction: column;
+  .stats{
+    grid-template-columns:
+      repeat(2,1fr);
   }
+
+  .status-row{
+    grid-template-columns:1fr;
+  }
+
+  .info-grid{
+    grid-template-columns:1fr;
+  }
+
+  footer{
+    flex-direction:column;
+  }
+
 }
+
+
+@media(max-width:500px){
+
+  .wrap,
+  .nav-inner{
+    width:
+      min(
+        100% - 24px,
+        1180px
+      );
+  }
+
+  .wrap{
+    padding-top:28px;
+  }
+
+  h1{
+    font-size:31px;
+  }
+
+  .stats{
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+}
+
 </style>
 </head>
 
+
 <body>
 
-<!-- =========================
-     TOP BANNER
-========================= -->
+
+<!-- =====================================
+     BANNER
+===================================== -->
 
 <div class="top-banner">
+
   <img
     src="New_Anuj_Cover.png"
-    alt="MicroRiskTrader Futures Trading Desk"
+    alt="Anuj Futures Trading Desk"
   >
+
 </div>
 
 
-<!-- =========================
-     MAIN CONTENT
-========================= -->
 
-<div class="wrap">
+<!-- =====================================
+     NAVIGATION
+===================================== -->
 
-  <header>
+<nav class="nav">
 
-    <div>
-      <div class="brand">
-        MicroRiskTrader
-      </div>
+  <div class="nav-inner">
 
-      <div class="subtitle">
-        Futures Risk & Position Size Calculator · TP 1:2
-      </div>
+    <div class="logo">
+      Micro<span>Risk</span>Trader
     </div>
 
 
-    <!-- GLOBAL TARGET RISK -->
+    <div class="nav-right">
 
-    <div class="risk-box">
+      <span>FUTURES</span>
 
-      <label for="globalRisk">
-        Default Target Risk ($)
-      </label>
+      <span>RISK MANAGEMENT</span>
+
+      <span>POSITION SIZING</span>
+
+    </div>
+
+  </div>
+
+</nav>
+
+
+
+<!-- =====================================
+     MAIN
+===================================== -->
+
+<main class="wrap">
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+  <div>
+
+    <div class="eyebrow">
+      Professional Futures Risk Tool
+    </div>
+
+
+    <h1>
+      Futures Risk<br>
+      Calculator
+    </h1>
+
+
+    <p>
+      Calculate position size, actual risk
+      and 1:2 targets before you trade.
+    </p>
+
+  </div>
+
+
+
+  <!-- TARGET RISK -->
+
+  <div class="risk-card">
+
+    <div class="risk-label">
+      Global Target Risk
+    </div>
+
+
+    <div class="risk-input">
+
+      <span>$</span>
 
       <input
         id="globalRisk"
@@ -352,146 +1039,434 @@ input:focus {
 
     </div>
 
-  </header>
+  </div>
+
+</section>
 
 
-  <!-- =========================
-       CALCULATOR TABLE
-  ========================= -->
 
-  <div class="table-card">
+<!-- =====================================
+     CONTRACT REFERENCE
+===================================== -->
 
-    <div class="table-scroll">
-
-      <table>
-
-        <thead>
-
-          <tr>
-
-            <th>
-              Instrument
-            </th>
-
-            <th>
-              Entry Price
-            </th>
-
-            <th>
-              SL Price
-            </th>
-
-            <th>
-              Target Risk ($)
-            </th>
-
-            <th>
-              Price Distance
-            </th>
-
-            <th>
-              $ / 1 Point
-            </th>
-
-            <th>
-              Risk / 1 Micro
-            </th>
-
-            <th>
-              Micros
-            </th>
-
-            <th>
-              Actual Risk
-            </th>
-
-            <th>
-              TP 1:2
-            </th>
-
-          </tr>
-
-        </thead>
+<section class="stats">
 
 
-        <tbody id="rows"></tbody>
+  <div class="stat">
 
-      </table>
+    <div class="stat-symbol">
+      MNQ
+    </div>
 
+    <div class="stat-desc">
+      Micro Nasdaq-100
+    </div>
+
+    <div class="stat-value">
+      $2 / point
     </div>
 
   </div>
 
 
-  <!-- =========================
-       NOTE
-  ========================= -->
 
-  <div class="note">
+  <div class="stat">
 
-    <div>
-      Enter only Entry, SL and Target Risk.
-      Micros, Actual Risk and TP are automatic.
+    <div class="stat-symbol">
+      MES
     </div>
 
-    <button
-      class="reset"
-      id="resetBtn"
-    >
-      Reset Inputs
-    </button>
+    <div class="stat-desc">
+      Micro S&amp;P 500
+    </div>
+
+    <div class="stat-value">
+      $5 / point
+    </div>
+
+  </div>
+
+
+
+  <div class="stat">
+
+    <div class="stat-symbol">
+      MGC
+    </div>
+
+    <div class="stat-desc">
+      Micro Gold
+    </div>
+
+    <div class="stat-value">
+      $10 / point
+    </div>
+
+  </div>
+
+
+
+  <div class="stat">
+
+    <div class="stat-symbol">
+      MYM
+    </div>
+
+    <div class="stat-desc">
+      Micro Dow
+    </div>
+
+    <div class="stat-value">
+      $0.50 / point
+    </div>
+
+  </div>
+
+
+
+  <div class="stat">
+
+    <div class="stat-symbol">
+      MCL
+    </div>
+
+    <div class="stat-desc">
+      Micro Crude Oil
+    </div>
+
+    <div class="stat-value">
+      $100 / point
+    </div>
+
+  </div>
+
+
+</section>
+
+
+
+<!-- =====================================
+     CALCULATOR HEADER
+===================================== -->
+
+<div class="section-head">
+
+  <div>
+
+    <div class="section-title">
+      Position Size Dashboard
+    </div>
+
+    <div class="section-sub">
+      Enter Entry, Stop Loss and Target Risk —
+      everything else is automatic.
+    </div>
 
   </div>
 
 </div>
 
 
-<!-- =========================
+
+<!-- =====================================
+     CALCULATOR
+===================================== -->
+
+<section class="calculator">
+
+  <div class="scroll">
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>
+            Instrument
+          </th>
+
+          <th>
+            Entry Price
+          </th>
+
+          <th>
+            SL Price
+          </th>
+
+          <th>
+            Target Risk
+          </th>
+
+          <th>
+            Distance
+          </th>
+
+          <th>
+            $ / Point
+          </th>
+
+          <th>
+            Risk / Micro
+          </th>
+
+          <th>
+            Micros
+          </th>
+
+          <th>
+            Actual Risk
+          </th>
+
+          <th>
+            TP 1:2
+          </th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody id="rows"></tbody>
+
+    </table>
+
+  </div>
+
+</section>
+
+
+
+<!-- =====================================
+     SUMMARY
+===================================== -->
+
+<section class="status-row">
+
+
+  <div class="status-card">
+
+    <div class="status-label">
+      Default Risk Budget
+    </div>
+
+    <div
+      class="status-value gold"
+      id="summaryTarget"
+    >
+      $500.00
+    </div>
+
+  </div>
+
+
+
+  <div class="status-card">
+
+    <div class="status-label">
+      Selected Micros
+    </div>
+
+    <div
+      class="status-value green"
+      id="summaryMicros"
+    >
+      0
+    </div>
+
+  </div>
+
+
+
+  <div class="status-card">
+
+    <div class="status-label">
+      Combined Actual Risk
+    </div>
+
+    <div
+      class="status-value"
+      id="summaryActual"
+    >
+      $0.00
+    </div>
+
+  </div>
+
+
+</section>
+
+
+
+<!-- NOTE -->
+
+<div class="note">
+
+  <span>
+    Micros use floor sizing so calculated
+    Actual Risk does not exceed Target Risk.
+  </span>
+
+
+  <button
+    class="reset"
+    id="resetBtn"
+  >
+    Reset Inputs
+  </button>
+
+</div>
+
+
+
+<!-- =====================================
+     HOW IT WORKS
+===================================== -->
+
+<section class="info-grid">
+
+
+  <div class="info">
+
+    <div class="info-number">
+      01 — INPUT
+    </div>
+
+    <h3>
+      Set your trade
+    </h3>
+
+    <p>
+      Enter your planned Entry Price,
+      Stop Loss and the maximum dollar
+      amount you are willing to risk.
+    </p>
+
+  </div>
+
+
+
+  <div class="info">
+
+    <div class="info-number">
+      02 — CALCULATE
+    </div>
+
+    <h3>
+      Size the position
+    </h3>
+
+    <p>
+      The calculator determines price
+      distance, risk per micro and the
+      maximum number of contracts within
+      your risk budget.
+    </p>
+
+  </div>
+
+
+
+  <div class="info">
+
+    <div class="info-number">
+      03 — PLAN
+    </div>
+
+    <h3>
+      Trade with structure
+    </h3>
+
+    <p>
+      Direction and a 1:2 risk-to-reward
+      target are calculated automatically
+      from your Entry and Stop Loss.
+    </p>
+
+  </div>
+
+
+</section>
+
+
+
+<!-- =====================================
+     FOOTER
+===================================== -->
+
+<footer>
+
+  <div>
+
+    <div class="footer-brand">
+      Micro<span>Risk</span>Trader
+    </div>
+
+    <div>
+      Futures Risk &amp; Position Size Calculator
+    </div>
+
+  </div>
+
+
+  <div>
+    DISCIPLINE · STRATEGY · CONSISTENCY
+  </div>
+
+</footer>
+
+
+</main>
+
+
+
+<!-- =====================================
      JAVASCRIPT
-========================= -->
+===================================== -->
 
 <script>
+
 
 const contracts = [
 
   {
-    name: "MNQ",
-    multiplier: 2,
-    decimals: 2,
-    entry: 29563.50,
-    sl: 29534.05
+    name:"MNQ",
+    multiplier:2,
+    decimals:2,
+    entry:29563.50,
+    sl:29534.05
   },
 
   {
-    name: "MES",
-    multiplier: 5,
-    decimals: 2,
-    entry: 7690.75,
-    sl: 7708.00
+    name:"MES",
+    multiplier:5,
+    decimals:2,
+    entry:7690.75,
+    sl:7708.00
   },
 
   {
-    name: "MGC",
-    multiplier: 10,
-    decimals: 2,
-    entry: 4404.20,
-    sl: 4395.00
+    name:"MGC",
+    multiplier:10,
+    decimals:2,
+    entry:4404.20,
+    sl:4395.00
   },
 
   {
-    name: "MYM",
-    multiplier: 0.5,
-    decimals: 0,
-    entry: 52882,
-    sl: 52920
+    name:"MYM",
+    multiplier:0.5,
+    decimals:0,
+    entry:52882,
+    sl:52920
   },
 
   {
-    name: "MCL",
-    multiplier: 100,
-    decimals: 2,
-    entry: 94.30,
-    sl: 94.66
+    name:"MCL",
+    multiplier:100,
+    decimals:2,
+    entry:94.30,
+    sl:94.66
   }
 
 ];
@@ -500,80 +1475,68 @@ const contracts = [
 const rows =
   document.getElementById("rows");
 
+
 const globalRisk =
   document.getElementById("globalRisk");
 
 
-/* =========================
-   FORMAT MONEY
-========================= */
 
-function money(n) {
+/* =====================================
+   MONEY FORMAT
+===================================== */
 
-  return "$" + n.toLocaleString(
-    "en-US",
-    {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }
-  );
+function money(n){
+
+  return "$" +
+    n.toLocaleString(
+      "en-US",
+      {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    );
 
 }
 
 
-/* =========================
-   FORMAT NUMBER
-========================= */
 
-function num(n, decimals = 2) {
+/* =====================================
+   NUMBER FORMAT
+===================================== */
+
+function numberFormat(n,decimals){
 
   return n.toLocaleString(
     "en-US",
     {
-      minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals
+      minimumFractionDigits:decimals,
+      maximumFractionDigits:decimals
     }
   );
 
 }
 
 
-/* =========================
-   FORMAT PRICE
-========================= */
 
-function price(n, decimals) {
+/* =====================================
+   RENDER
+===================================== */
 
-  return n.toLocaleString(
-    "en-US",
-    {
-      minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals
-    }
-  );
+function render(){
 
-}
+  rows.innerHTML="";
 
 
-/* =========================
-   RENDER TABLE
-========================= */
-
-function render() {
-
-  rows.innerHTML = "";
-
-
-  contracts.forEach((c, i) => {
+  contracts.forEach((c,i)=>{
 
     const tr =
       document.createElement("tr");
 
 
-    tr.dataset.i = i;
+    tr.dataset.i=i;
 
 
-    tr.innerHTML = `
+    tr.innerHTML=`
 
       <td>
 
@@ -581,8 +1544,12 @@ function render() {
           ${c.name}
         </div>
 
+        <div class="multiplier">
+          $${c.multiplier} / point
+        </div>
+
         <div
-          class="direction"
+          class="badge"
           id="dir-${i}"
         >
           —
@@ -591,10 +1558,10 @@ function render() {
       </td>
 
 
-      <td class="input-cell">
+      <td class="input-wrap">
 
         <input
-          class="price entry"
+          class="input entry"
           type="number"
           step="any"
           value="${c.entry}"
@@ -604,10 +1571,10 @@ function render() {
       </td>
 
 
-      <td class="input-cell">
+      <td class="input-wrap">
 
         <input
-          class="price sl"
+          class="input sl"
           type="number"
           step="any"
           value="${c.sl}"
@@ -617,14 +1584,14 @@ function render() {
       </td>
 
 
-      <td class="input-cell">
+      <td class="input-wrap">
 
         <input
-          class="target risk"
+          class="input target-input risk"
           type="number"
           min="0"
           step="0.01"
-          value="500"
+          value="${globalRisk.value}"
           data-i="${i}"
         >
 
@@ -632,22 +1599,20 @@ function render() {
 
 
       <td
-        class="result"
+        class="distance"
         id="dist-${i}"
       >
         —
       </td>
 
 
-      <td class="result">
-
-        ${money(c.multiplier)}
-
+      <td class="rpm">
+        $${numberFormat(c.multiplier,2)}
       </td>
 
 
       <td
-        class="result"
+        class="rpm"
         id="rpm-${i}"
       >
         —
@@ -685,9 +1650,12 @@ function render() {
   });
 
 
+
   document
-    .querySelectorAll("input")
-    .forEach(el => {
+    .querySelectorAll(
+      ".entry,.sl,.risk"
+    )
+    .forEach(el=>{
 
       el.addEventListener(
         "input",
@@ -702,19 +1670,28 @@ function render() {
 }
 
 
-/* =========================
-   CALCULATE EVERYTHING
-========================= */
 
-function calculateAll() {
+/* =====================================
+   CALCULATE
+===================================== */
+
+function calculateAll(){
 
   const target =
     parseFloat(globalRisk.value) || 0;
 
 
+  let totalMicros=0;
+
+  let totalActual=0;
+
+
   document
-    .querySelectorAll("tr[data-i]")
-    .forEach(tr => {
+    .querySelectorAll(
+      "tr[data-i]"
+    )
+    .forEach(tr=>{
+
 
       const i =
         Number(tr.dataset.i);
@@ -724,109 +1701,89 @@ function calculateAll() {
         contracts[i];
 
 
-      const entryEl =
-        tr.querySelector(".entry");
-
-
-      const slEl =
-        tr.querySelector(".sl");
-
-
-      const riskEl =
-        tr.querySelector(".risk");
-
-
       const entry =
-        parseFloat(entryEl.value);
+        parseFloat(
+          tr.querySelector(
+            ".entry"
+          ).value
+        );
 
 
       const sl =
-        parseFloat(slEl.value);
+        parseFloat(
+          tr.querySelector(
+            ".sl"
+          ).value
+        );
 
 
-      if (
+      const risk =
+        parseFloat(
+          tr.querySelector(
+            ".risk"
+          ).value
+        ) || 0;
+
+
+
+      if(
         !Number.isFinite(entry) ||
         !Number.isFinite(sl)
-      ) {
+      ){
 
         return;
 
       }
 
 
-      /*
-        Keep Target Risk synced
-        with the main Target Risk box
-      */
 
-      if (
-        document.activeElement !== riskEl &&
-        (
-          riskEl.value === "" ||
-          riskEl.value === "500"
-        )
-      ) {
-
-        riskEl.value = target;
-
-      }
-
-
-      const risk =
-        parseFloat(riskEl.value) || 0;
-
-
-      /*
-        Price Distance
-      */
+      /* PRICE DISTANCE */
 
       const distance =
-        Math.abs(entry - sl);
+        Math.abs(
+          entry-sl
+        );
 
 
-      /*
-        Risk per Micro
-      */
+
+      /* RISK PER MICRO */
 
       const riskPerMicro =
-        distance * c.multiplier;
+        distance *
+        c.multiplier;
 
 
-      /*
-        Micros
 
-        FLOOR is used so Actual Risk
-        never exceeds Target Risk.
-      */
+      /* MICRO CONTRACTS */
 
       const micros =
         riskPerMicro > 0
           ? Math.floor(
-              risk / riskPerMicro
+              risk /
+              riskPerMicro
             )
           : 0;
 
 
-      /*
-        Actual Risk
-      */
+
+      /* ACTUAL RISK */
 
       const actualRisk =
-        micros * riskPerMicro;
+        micros *
+        riskPerMicro;
 
 
-      /*
-        Direction + TP 1:2
-      */
 
-      let tp = entry;
+      /* DIRECTION + TP */
 
-      let dir = "—";
+      let direction="—";
+
+      let tp=entry;
 
 
-      if (sl < entry) {
+      if(sl < entry){
 
-        dir = "LONG";
+        direction="LONG";
 
         tp =
           entry +
@@ -834,9 +1791,10 @@ function calculateAll() {
 
       }
 
-      else if (sl > entry) {
 
-        dir = "SHORT";
+      else if(sl > entry){
+
+        direction="SHORT";
 
         tp =
           entry -
@@ -845,21 +1803,24 @@ function calculateAll() {
       }
 
 
-      /*
-        Update values
-      */
+
+      /* UPDATE OUTPUTS */
 
       document
-        .getElementById(`dist-${i}`)
+        .getElementById(
+          `dist-${i}`
+        )
         .textContent =
-        num(
+        numberFormat(
           distance,
           c.decimals
         );
 
 
       document
-        .getElementById(`rpm-${i}`)
+        .getElementById(
+          `rpm-${i}`
+        )
         .textContent =
         money(
           riskPerMicro
@@ -867,13 +1828,17 @@ function calculateAll() {
 
 
       document
-        .getElementById(`micros-${i}`)
+        .getElementById(
+          `micros-${i}`
+        )
         .textContent =
         micros;
 
 
       document
-        .getElementById(`actual-${i}`)
+        .getElementById(
+          `actual-${i}`
+        )
         .textContent =
         money(
           actualRisk
@@ -881,53 +1846,89 @@ function calculateAll() {
 
 
       document
-        .getElementById(`tp-${i}`)
+        .getElementById(
+          `tp-${i}`
+        )
         .textContent =
-        price(
+        numberFormat(
           tp,
           c.decimals
         );
 
 
-      /*
-        Direction badge
-      */
 
-      const dirEl =
+      /* DIRECTION BADGE */
+
+      const badge =
         document.getElementById(
           `dir-${i}`
         );
 
 
-      dirEl.textContent = dir;
+      badge.textContent =
+        direction;
 
 
-      dirEl.className =
-        "direction " +
+      badge.className =
+        "badge " +
         (
-          dir === "LONG"
+          direction === "LONG"
             ? "long"
-            : dir === "SHORT"
+            : direction === "SHORT"
               ? "short"
               : ""
         );
 
+
+
+      totalMicros += micros;
+
+      totalActual += actualRisk;
+
     });
+
+
+
+  /* SUMMARY */
+
+  document
+    .getElementById(
+      "summaryTarget"
+    )
+    .textContent =
+    money(target);
+
+
+  document
+    .getElementById(
+      "summaryMicros"
+    )
+    .textContent =
+    totalMicros;
+
+
+  document
+    .getElementById(
+      "summaryActual"
+    )
+    .textContent =
+    money(totalActual);
 
 }
 
 
-/* =========================
+
+/* =====================================
    GLOBAL TARGET RISK
-========================= */
+===================================== */
 
 globalRisk.addEventListener(
   "input",
-  () => {
+  ()=>{
 
     document
       .querySelectorAll(".risk")
-      .forEach(el => {
+      .forEach(el=>{
 
         el.value =
           globalRisk.value;
@@ -941,17 +1942,20 @@ globalRisk.addEventListener(
 );
 
 
-/* =========================
+
+/* =====================================
    RESET
-========================= */
+===================================== */
 
 document
-  .getElementById("resetBtn")
+  .getElementById(
+    "resetBtn"
+  )
   .addEventListener(
     "click",
-    () => {
+    ()=>{
 
-      globalRisk.value = 500;
+      globalRisk.value=500;
 
       render();
 
@@ -959,11 +1963,13 @@ document
   );
 
 
-/* =========================
+
+/* =====================================
    START
-========================= */
+===================================== */
 
 render();
+
 
 </script>
 
