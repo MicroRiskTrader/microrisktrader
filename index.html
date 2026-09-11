@@ -932,6 +932,129 @@ footer{
 
 }
 
+
+/* =====================================
+   INSTRUMENT SELECTOR
+===================================== */
+.instrument-selector{
+  border:1px solid var(--line2);
+  border-radius:16px;
+  background:var(--panel);
+  padding:14px;
+  box-shadow:0 18px 55px rgba(0,0,0,.20);
+}
+.instrument-select{
+  width:100%;
+  appearance:none;
+  -webkit-appearance:none;
+  border:1px solid var(--line2);
+  border-radius:11px;
+  background:
+    linear-gradient(45deg,transparent 50%,var(--gold2) 50%) calc(100% - 22px) 50%/7px 7px no-repeat,
+    linear-gradient(135deg,var(--gold2) 50%,transparent 50%) calc(100% - 17px) 50%/7px 7px no-repeat,
+    #0d1721;
+  color:var(--text);
+  padding:14px 44px 14px 15px;
+  font-size:14px;
+  font-weight:850;
+  outline:none;
+  cursor:pointer;
+}
+.instrument-select:focus{
+  border-color:var(--gold2);
+  box-shadow:0 0 0 2px rgba(240,199,94,.12);
+}
+.instrument-meta{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:10px;
+  color:var(--muted);
+  font-size:11px;
+}
+.instrument-meta strong{color:var(--gold2)}
+
+/* =====================================
+   P&L CALCULATOR
+===================================== */
+.pnl-card{
+  border:1px solid var(--line2);
+  border-radius:16px;
+  background:var(--panel);
+  padding:18px;
+  box-shadow:0 18px 55px rgba(0,0,0,.20);
+}
+.pnl-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:12px;
+}
+.field-label{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  font-weight:850;
+  letter-spacing:.8px;
+  text-transform:uppercase;
+  margin-bottom:7px;
+}
+.pnl-input,.side-select{
+  width:100%;
+  border:1px solid #526678;
+  background:#fff0a0;
+  color:#111;
+  border-radius:8px;
+  padding:11px 10px;
+  font-size:13px;
+  font-weight:850;
+  outline:none;
+}
+.side-select{background:#0d1721;color:var(--text);border-color:var(--line2)}
+.pnl-input:focus,.side-select:focus{
+  border-color:var(--gold2);
+  box-shadow:0 0 0 2px rgba(240,199,94,.12);
+}
+.pnl-results{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-top:14px;
+}
+.pnl-result{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:14px;
+  background:var(--panel2);
+}
+.pnl-result-label{
+  color:var(--muted);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.8px;
+}
+.pnl-result-value{
+  margin-top:6px;
+  font-size:19px;
+  font-weight:950;
+}
+.pnl-result-value.loss{color:var(--red)}
+.pnl-result-value.profit{color:var(--green)}
+.pnl-result-value.gold{color:var(--gold2)}
+.pnl-helper{
+  margin-top:11px;
+  color:#718293;
+  font-size:11px;
+  line-height:1.5;
+}
+
+@media(max-width:800px){
+  .pnl-grid{grid-template-columns:1fr 1fr}
+  .pnl-results{grid-template-columns:1fr 1fr}
+}
+@media(max-width:500px){
+  .pnl-grid,.pnl-results{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 
@@ -1032,100 +1155,24 @@ footer{
 
 
 <!-- =====================================
-     CONTRACT REFERENCE
+     INSTRUMENT SELECTOR
 ===================================== -->
 
-<section class="stats">
+<section class="instrument-selector">
 
+  <select id="instrumentSelect" class="instrument-select">
+    <option value="MNQ">MNQ — Micro Nasdaq-100</option>
+    <option value="MES">MES — Micro S&amp;P 500</option>
+    <option value="MGC">MGC — Micro Gold</option>
+    <option value="MYM">MYM — Micro Dow</option>
+    <option value="MCL">MCL — Micro Crude Oil</option>
+    <option value="M2K">M2K — Micro Russell 2000</option>
+  </select>
 
-  <div class="stat">
-
-    <div class="stat-symbol">
-      MNQ
-    </div>
-
-    <div class="stat-desc">
-      Micro Nasdaq-100
-    </div>
-
-    <div class="stat-value">
-      $2 / point
-    </div>
-
+  <div class="instrument-meta">
+    <span id="instrumentDescription">Micro Nasdaq-100</span>
+    <span><strong id="instrumentMultiplier">$2.00 / 1.00 move</strong></span>
   </div>
-
-
-
-  <div class="stat">
-
-    <div class="stat-symbol">
-      MES
-    </div>
-
-    <div class="stat-desc">
-      Micro S&amp;P 500
-    </div>
-
-    <div class="stat-value">
-      $5 / point
-    </div>
-
-  </div>
-
-
-
-  <div class="stat">
-
-    <div class="stat-symbol">
-      MGC
-    </div>
-
-    <div class="stat-desc">
-      Micro Gold
-    </div>
-
-    <div class="stat-value">
-      $10 / point
-    </div>
-
-  </div>
-
-
-
-  <div class="stat">
-
-    <div class="stat-symbol">
-      MYM
-    </div>
-
-    <div class="stat-desc">
-      Micro Dow
-    </div>
-
-    <div class="stat-value">
-      $0.50 / point
-    </div>
-
-  </div>
-
-
-
-  <div class="stat">
-
-    <div class="stat-symbol">
-      MCL
-    </div>
-
-    <div class="stat-desc">
-      Micro Crude Oil
-    </div>
-
-    <div class="stat-value">
-      $100 / point
-    </div>
-
-  </div>
-
 
 </section>
 
@@ -1138,89 +1185,122 @@ footer{
 <div class="section-head">
 
   <div>
-
     <div class="section-title">
-      Position Size Dashboard
+      Position Size Calculator
     </div>
 
     <div class="section-sub">
-      Enter Entry, Stop Loss and Target Risk —
-      everything else is automatic.
+      Select one instrument and calculate position size from Entry, Stop Loss and Target Risk.
     </div>
-
   </div>
 
 </div>
-
-
-
-<!-- =====================================
-     CALCULATOR
-===================================== -->
 
 <section class="calculator">
 
   <div class="scroll">
 
     <table>
-
       <thead>
-
         <tr>
-
-          <th>
-            Instrument
-          </th>
-
-          <th>
-            Entry Price
-          </th>
-
-          <th>
-            SL Price
-          </th>
-
-          <th>
-            Target Risk
-          </th>
-
-          <th>
-            Distance
-          </th>
-
-          <th>
-            $ / Point
-          </th>
-
-          <th>
-            Risk / Micro
-          </th>
-
-          <th>
-            Micros
-          </th>
-
-          <th>
-            Actual Risk
-          </th>
-
-          <th>
-            TP 1:2
-          </th>
-
+          <th>Instrument</th>
+          <th>Entry Price</th>
+          <th>SL Price</th>
+          <th>Target Risk</th>
+          <th>Distance</th>
+          <th>$ / 1.00 Move</th>
+          <th>Risk / Micro</th>
+          <th>Micros</th>
+          <th>Actual Risk</th>
+          <th>TP 1:2</th>
         </tr>
-
       </thead>
 
-
       <tbody id="rows"></tbody>
-
     </table>
 
   </div>
 
 </section>
 
+
+<!-- =====================================
+     TRADE P&L CALCULATOR
+===================================== -->
+
+<div class="section-head">
+  <div>
+    <div class="section-title">Trade P&amp;L Calculator</div>
+    <div class="section-sub">
+      Enter Buy/Sell price, Stop Loss, Take Profit and Micro contracts to see exact loss and profit.
+    </div>
+  </div>
+</div>
+
+<section class="pnl-card">
+
+  <div class="pnl-grid">
+
+    <div>
+      <label class="field-label">Side</label>
+      <select id="pnlSide" class="side-select">
+        <option value="buy">BUY</option>
+        <option value="sell">SELL</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="field-label">Buy / Sell Price</label>
+      <input id="pnlEntry" class="pnl-input" type="number" step="any" placeholder="Entry price">
+    </div>
+
+    <div>
+      <label class="field-label">Stop Loss</label>
+      <input id="pnlSL" class="pnl-input" type="number" step="any" placeholder="SL price">
+    </div>
+
+    <div>
+      <label class="field-label">Take Profit</label>
+      <input id="pnlTP" class="pnl-input" type="number" step="any" placeholder="TP price">
+    </div>
+
+    <div>
+      <label class="field-label">Micros</label>
+      <input id="pnlMicros" class="pnl-input" type="number" min="1" step="1" value="1">
+    </div>
+
+  </div>
+
+  <div class="pnl-results">
+
+    <div class="pnl-result">
+      <div class="pnl-result-label">SL Loss</div>
+      <div class="pnl-result-value loss" id="pnlLoss">$0.00</div>
+    </div>
+
+    <div class="pnl-result">
+      <div class="pnl-result-label">TP Profit</div>
+      <div class="pnl-result-value profit" id="pnlProfit">$0.00</div>
+    </div>
+
+    <div class="pnl-result">
+      <div class="pnl-result-label">Risk Distance</div>
+      <div class="pnl-result-value gold" id="pnlRiskDistance">0.00</div>
+    </div>
+
+    <div class="pnl-result">
+      <div class="pnl-result-label">Reward Distance</div>
+      <div class="pnl-result-value gold" id="pnlRewardDistance">0.00</div>
+    </div>
+
+  </div>
+
+  <div class="pnl-helper">
+    Loss and profit are calculated from the selected instrument's contract multiplier.
+    Change SL/TP while trailing and the dollar values update instantly.
+  </div>
+
+</section>
 
 
 <!-- =====================================
@@ -1414,58 +1494,65 @@ footer{
 
 
 const contracts = [
-
   {
     name:"MNQ",
+    description:"Micro Nasdaq-100",
     multiplier:2,
     decimals:2,
     entry:29563.50,
     sl:29534.05
   },
-
   {
     name:"MES",
+    description:"Micro S&P 500",
     multiplier:5,
     decimals:2,
     entry:7690.75,
     sl:7708.00
   },
-
   {
     name:"MGC",
+    description:"Micro Gold",
     multiplier:10,
     decimals:2,
     entry:4404.20,
     sl:4395.00
   },
-
   {
     name:"MYM",
+    description:"Micro Dow",
     multiplier:0.5,
     decimals:0,
     entry:52882,
     sl:52920
   },
-
   {
     name:"MCL",
+    description:"Micro Crude Oil",
     multiplier:100,
     decimals:2,
     entry:94.30,
     sl:94.66
+  },
+  {
+    name:"M2K",
+    description:"Micro Russell 2000",
+    multiplier:5,
+    decimals:2,
+    entry:2200.00,
+    sl:2190.00
   }
-
 ];
 
+const rows = document.getElementById("rows");
+const globalRisk = document.getElementById("globalRisk");
+const instrumentSelect = document.getElementById("instrumentSelect");
+const instrumentDescription = document.getElementById("instrumentDescription");
+const instrumentMultiplier = document.getElementById("instrumentMultiplier");
 
-const rows =
-  document.getElementById("rows");
-
-
-const globalRisk =
-  document.getElementById("globalRisk");
-
-
+function selectedContract(){
+  return contracts.find(c => c.name === instrumentSelect.value) || contracts[0];
+}
 
 /* =====================================
    MONEY FORMAT
@@ -1510,453 +1597,229 @@ function numberFormat(n,decimals){
 
 function render(){
 
-  rows.innerHTML="";
+  const c = selectedContract();
 
+  instrumentDescription.textContent = c.description;
+  instrumentMultiplier.textContent = "$" + numberFormat(c.multiplier,2) + " / 1.00 move";
 
-  contracts.forEach((c,i)=>{
+  rows.innerHTML = "";
 
-    const tr =
-      document.createElement("tr");
+  const tr = document.createElement("tr");
+  tr.dataset.i = contracts.indexOf(c);
 
+  tr.innerHTML = `
 
-    tr.dataset.i=i;
+    <td>
+      <div class="instrument">${c.name}</div>
+      <div class="multiplier">${c.description}</div>
+      <div class="badge" id="dir-0">—</div>
+    </td>
 
+    <td class="input-wrap">
+      <input class="input entry" type="number" step="any" value="${c.entry}">
+    </td>
 
-    tr.innerHTML=`
+    <td class="input-wrap">
+      <input class="input sl" type="number" step="any" value="${c.sl}">
+    </td>
 
-      <td>
+    <td class="input-wrap">
+      <input class="input target-input risk" type="number" min="0" step="0.01" value="${globalRisk.value}">
+    </td>
 
-        <div class="instrument">
-          ${c.name}
-        </div>
+    <td class="distance" id="dist-0">—</td>
 
-        <div class="multiplier">
-          $${c.multiplier} / point
-        </div>
+    <td class="rpm">$${numberFormat(c.multiplier,2)}</td>
 
-        <div
-          class="badge"
-          id="dir-${i}"
-        >
-          —
-        </div>
+    <td class="rpm" id="rpm-0">—</td>
 
-      </td>
+    <td class="micros" id="micros-0">—</td>
 
+    <td class="actual" id="actual-0">—</td>
 
-      <td class="input-wrap">
+    <td class="tp" id="tp-0">—</td>
 
-        <input
-          class="input entry"
-          type="number"
-          step="any"
-          value="${c.entry}"
-          data-i="${i}"
-        >
+  `;
 
-      </td>
+  rows.appendChild(tr);
 
-
-      <td class="input-wrap">
-
-        <input
-          class="input sl"
-          type="number"
-          step="any"
-          value="${c.sl}"
-          data-i="${i}"
-        >
-
-      </td>
-
-
-      <td class="input-wrap">
-
-        <input
-          class="input target-input risk"
-          type="number"
-          min="0"
-          step="0.01"
-          value="${globalRisk.value}"
-          data-i="${i}"
-        >
-
-      </td>
-
-
-      <td
-        class="distance"
-        id="dist-${i}"
-      >
-        —
-      </td>
-
-
-      <td class="rpm">
-        $${numberFormat(c.multiplier,2)}
-      </td>
-
-
-      <td
-        class="rpm"
-        id="rpm-${i}"
-      >
-        —
-      </td>
-
-
-      <td
-        class="micros"
-        id="micros-${i}"
-      >
-        —
-      </td>
-
-
-      <td
-        class="actual"
-        id="actual-${i}"
-      >
-        —
-      </td>
-
-
-      <td
-        class="tp"
-        id="tp-${i}"
-      >
-        —
-      </td>
-
-    `;
-
-
-    rows.appendChild(tr);
-
+  document.querySelectorAll(".entry,.sl,.risk").forEach(el=>{
+    el.addEventListener("input", calculateAll);
   });
 
-
-
-  document
-    .querySelectorAll(
-      ".entry,.sl,.risk"
-    )
-    .forEach(el=>{
-
-      el.addEventListener(
-        "input",
-        calculateAll
-      );
-
-    });
-
-
   calculateAll();
-
+  syncPnlFromInstrument();
 }
 
 
-
 /* =====================================
-   CALCULATE
+   CALCULATE POSITION SIZE
 ===================================== */
 
 function calculateAll(){
 
-  const target =
-    parseFloat(globalRisk.value) || 0;
+  const target = parseFloat(globalRisk.value) || 0;
+  const tr = rows.querySelector("tr[data-i]");
 
+  let totalMicros = 0;
+  let totalActual = 0;
 
-  let totalMicros=0;
+  if(tr){
 
-  let totalActual=0;
+    const i = Number(tr.dataset.i);
+    const c = contracts[i];
 
+    const entry = parseFloat(tr.querySelector(".entry").value);
+    const sl = parseFloat(tr.querySelector(".sl").value);
+    const risk = parseFloat(tr.querySelector(".risk").value) || 0;
 
-  document
-    .querySelectorAll(
-      "tr[data-i]"
-    )
-    .forEach(tr=>{
+    if(Number.isFinite(entry) && Number.isFinite(sl)){
 
+      const distance = Math.abs(entry - sl);
+      const riskPerMicro = distance * c.multiplier;
 
-      const i =
-        Number(tr.dataset.i);
+      const micros = riskPerMicro > 0
+        ? Math.floor(risk / riskPerMicro)
+        : 0;
 
+      const actualRisk = micros * riskPerMicro;
 
-      const c =
-        contracts[i];
-
-
-      const entry =
-        parseFloat(
-          tr.querySelector(
-            ".entry"
-          ).value
-        );
-
-
-      const sl =
-        parseFloat(
-          tr.querySelector(
-            ".sl"
-          ).value
-        );
-
-
-      const risk =
-        parseFloat(
-          tr.querySelector(
-            ".risk"
-          ).value
-        ) || 0;
-
-
-
-      if(
-        !Number.isFinite(entry) ||
-        !Number.isFinite(sl)
-      ){
-
-        return;
-
-      }
-
-
-
-      /* PRICE DISTANCE */
-
-      const distance =
-        Math.abs(
-          entry-sl
-        );
-
-
-
-      /* RISK PER MICRO */
-
-      const riskPerMicro =
-        distance *
-        c.multiplier;
-
-
-
-      /* MICRO CONTRACTS */
-
-      const micros =
-        riskPerMicro > 0
-          ? Math.floor(
-              risk /
-              riskPerMicro
-            )
-          : 0;
-
-
-
-      /* ACTUAL RISK */
-
-      const actualRisk =
-        micros *
-        riskPerMicro;
-
-
-
-      /* DIRECTION + TP */
-
-      let direction="—";
-
-      let tp=entry;
-
+      let direction = "—";
+      let tp = entry;
 
       if(sl < entry){
-
-        direction="LONG";
-
-        tp =
-          entry +
-          distance * 2;
-
+        direction = "LONG";
+        tp = entry + distance * 2;
+      } else if(sl > entry){
+        direction = "SHORT";
+        tp = entry - distance * 2;
       }
 
+      document.getElementById("dist-0").textContent =
+        numberFormat(distance,c.decimals);
 
-      else if(sl > entry){
+      document.getElementById("rpm-0").textContent =
+        money(riskPerMicro);
 
-        direction="SHORT";
+      document.getElementById("micros-0").textContent = micros;
 
-        tp =
-          entry -
-          distance * 2;
+      document.getElementById("actual-0").textContent =
+        money(actualRisk);
 
-      }
+      document.getElementById("tp-0").textContent =
+        numberFormat(tp,c.decimals);
 
-
-
-      /* UPDATE OUTPUTS */
-
-      document
-        .getElementById(
-          `dist-${i}`
-        )
-        .textContent =
-        numberFormat(
-          distance,
-          c.decimals
-        );
-
-
-      document
-        .getElementById(
-          `rpm-${i}`
-        )
-        .textContent =
-        money(
-          riskPerMicro
-        );
-
-
-      document
-        .getElementById(
-          `micros-${i}`
-        )
-        .textContent =
-        micros;
-
-
-      document
-        .getElementById(
-          `actual-${i}`
-        )
-        .textContent =
-        money(
-          actualRisk
-        );
-
-
-      document
-        .getElementById(
-          `tp-${i}`
-        )
-        .textContent =
-        numberFormat(
-          tp,
-          c.decimals
-        );
-
-
-
-      /* DIRECTION BADGE */
-
-      const badge =
-        document.getElementById(
-          `dir-${i}`
-        );
-
-
-      badge.textContent =
-        direction;
-
-
+      const badge = document.getElementById("dir-0");
+      badge.textContent = direction;
       badge.className =
         "badge " +
-        (
-          direction === "LONG"
-            ? "long"
-            : direction === "SHORT"
-              ? "short"
-              : ""
-        );
+        (direction === "LONG" ? "long" :
+         direction === "SHORT" ? "short" : "");
 
+      totalMicros = micros;
+      totalActual = actualRisk;
+    }
+  }
 
-
-      totalMicros += micros;
-
-      totalActual += actualRisk;
-
-    });
-
-
-
-  /* SUMMARY */
-
-  document
-    .getElementById(
-      "summaryTarget"
-    )
-    .textContent =
-    money(target);
-
-
-  document
-    .getElementById(
-      "summaryMicros"
-    )
-    .textContent =
-    totalMicros;
-
-
-  document
-    .getElementById(
-      "summaryActual"
-    )
-    .textContent =
-    money(totalActual);
-
+  document.getElementById("summaryTarget").textContent = money(target);
+  document.getElementById("summaryMicros").textContent = totalMicros;
+  document.getElementById("summaryActual").textContent = money(totalActual);
 }
 
 
-
 /* =====================================
-   GLOBAL TARGET RISK
+   TRADE P&L CALCULATOR
 ===================================== */
 
-globalRisk.addEventListener(
-  "input",
-  ()=>{
+const pnlSide = document.getElementById("pnlSide");
+const pnlEntry = document.getElementById("pnlEntry");
+const pnlSL = document.getElementById("pnlSL");
+const pnlTP = document.getElementById("pnlTP");
+const pnlMicros = document.getElementById("pnlMicros");
 
-    document
-      .querySelectorAll(".risk")
-      .forEach(el=>{
+function syncPnlFromInstrument(){
 
-        el.value =
-          globalRisk.value;
+  const tr = rows.querySelector("tr[data-i]");
+  if(!tr) return;
 
-      });
+  const entry = parseFloat(tr.querySelector(".entry").value);
+  const sl = parseFloat(tr.querySelector(".sl").value);
 
+  if(!Number.isFinite(entry) || !Number.isFinite(sl)) return;
 
-    calculateAll();
+  pnlEntry.value = entry;
+  pnlSL.value = sl;
 
+  /* Keep the existing trade direction and create a default 1:2 TP. */
+  const distance = Math.abs(entry - sl);
+
+  if(sl < entry){
+    pnlSide.value = "buy";
+    pnlTP.value = entry + distance * 2;
+  }else{
+    pnlSide.value = "sell";
+    pnlTP.value = entry - distance * 2;
   }
-);
 
+  calculatePnl();
+}
 
+function calculatePnl(){
 
-/* =====================================
-   RESET
-===================================== */
+  const c = selectedContract();
+  const entry = parseFloat(pnlEntry.value);
+  const sl = parseFloat(pnlSL.value);
+  const tp = parseFloat(pnlTP.value);
+  const micros = Math.max(0, parseInt(pnlMicros.value,10) || 0);
 
-document
-  .getElementById(
-    "resetBtn"
-  )
-  .addEventListener(
-    "click",
-    ()=>{
+  if(!Number.isFinite(entry) ||
+     !Number.isFinite(sl) ||
+     !Number.isFinite(tp)){
 
-      globalRisk.value=500;
+    document.getElementById("pnlLoss").textContent = "$0.00";
+    document.getElementById("pnlProfit").textContent = "$0.00";
+    document.getElementById("pnlRiskDistance").textContent = "0.00";
+    document.getElementById("pnlRewardDistance").textContent = "0.00";
+    return;
+  }
 
-      render();
+  const riskDistance = Math.abs(entry - sl);
+  const rewardDistance = Math.abs(tp - entry);
 
-    }
-  );
+  const loss = riskDistance * c.multiplier * micros;
+  const profit = rewardDistance * c.multiplier * micros;
 
+  document.getElementById("pnlLoss").textContent = "-" + money(loss);
+  document.getElementById("pnlProfit").textContent = "+" + money(profit);
+  document.getElementById("pnlRiskDistance").textContent =
+    numberFormat(riskDistance,c.decimals);
+  document.getElementById("pnlRewardDistance").textContent =
+    numberFormat(rewardDistance,c.decimals);
+}
 
+[pnlSide,pnlEntry,pnlSL,pnlTP,pnlMicros].forEach(el=>{
+  el.addEventListener("input", calculatePnl);
+  el.addEventListener("change", calculatePnl);
+});
 
-/* =====================================
-   START
-===================================== */
+instrumentSelect.addEventListener("change", ()=>{
+  render();
+});
+
+globalRisk.addEventListener("input", ()=>{
+  const riskInputs = document.querySelectorAll(".risk");
+  riskInputs.forEach(el => el.value = globalRisk.value);
+  calculateAll();
+});
+
+document.getElementById("resetBtn").addEventListener("click", ()=>{
+  globalRisk.value = 500;
+  instrumentSelect.value = "MNQ";
+  pnlMicros.value = 1;
+  render();
+});
 
 render();
-
-
 </script>
 
 </body>
