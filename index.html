@@ -1055,6 +1055,19 @@ footer{
   .pnl-grid,.pnl-results{grid-template-columns:1fr}
 }
 
+
+.news-ticker{width:100%;background:#260b0b;border-bottom:1px solid #7d2222;color:#fff;overflow:hidden}
+.news-ticker-inner{width:min(1180px,calc(100% - 36px));min-height:38px;margin:auto;display:flex;align-items:center;gap:12px}
+.news-label{flex:none;display:flex;align-items:center;gap:7px;color:#ff8585;font-size:10px;font-weight:950;letter-spacing:1px;white-space:nowrap}
+.news-dot{width:7px;height:7px;border-radius:50%;background:#ff4d4d;box-shadow:0 0 10px rgba(255,77,77,.75);animation:newsPulse 1.2s infinite}
+@keyframes newsPulse{0%,100%{opacity:1}50%{opacity:.35}}
+.news-event{min-width:0;flex:1;display:flex;align-items:center;justify-content:space-between;gap:14px;font-size:11px}
+.news-event-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:850}
+.news-event-time{flex:none;color:#ffb1b1;font-weight:900;white-space:nowrap}
+.news-countdown{flex:none;color:#fff;font-variant-numeric:tabular-nums;font-weight:950;white-space:nowrap}
+.news-status{color:#9a6d6d;font-size:9px;white-space:nowrap}
+@media(max-width:600px){.news-ticker-inner{width:calc(100% - 24px)}.news-status{display:none}.news-event{gap:8px}}
+
 </style>
 </head>
 
@@ -1066,6 +1079,19 @@ footer{
 <!-- =====================================
      NAVIGATION
 ===================================== -->
+
+
+<div class="news-ticker">
+  <div class="news-ticker-inner">
+    <div class="news-label"><span class="news-dot"></span>HIGH IMPACT NEWS</div>
+    <div class="news-event">
+      <span class="news-event-name" id="newsName">Loading US economic calendar...</span>
+      <span class="news-event-time" id="newsTime">--:-- IST</span>
+      <span class="news-countdown" id="newsCountdown">--:--:--</span>
+    </div>
+    <span class="news-status" id="newsStatus">LIVE</span>
+  </div>
+</div>
 
 <nav class="nav">
 
@@ -1820,6 +1846,65 @@ document.getElementById("resetBtn").addEventListener("click", ()=>{
 });
 
 render();
+
+const newsName=document.getElementById("newsName");
+const newsTime=document.getElementById("newsTime");
+const newsCountdown=document.getElementById("newsCountdown");
+const newsStatus=document.getElementById("newsStatus");
+let newsEvents=[];
+
+function parseNewsDate(v){const d=new Date(v);return Number.isNaN(d.getTime())?null:d}
+function formatIST(d){return new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",hour:"2-digit",minute:"2-digit",hour12:true}).format(d)+" IST"}
+function countdown(ms){
+  if(ms<=0)return "NOW";
+  const s=Math.floor(ms/1000),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),sec=s%60;
+  return d>0?`${d}d ${String(h).padStart(2,"0")}h`:`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+}
+function normalizeNews(data){
+  const list=Array.isArray(data)?data:(data.data||[]);
+  return list.map(e=>({
+    name:e.eventName||e.name||e.event||"US Economic Event",
+    time:parseNewsDate(e.scheduledAt||e.scheduled_at||e.time||e.datetime)
+  })).filter(e=>e.time&&e.time.getTime()>=Date.now()-60000).sort((a,b)=>a.time-b.time);
+}
+async function loadNews(){
+  try{
+    const r=await fetch("https://xoomar.com/api/markets/calendar?importance=high",{cache:"no-store"});
+    if(!r.ok)throw new Error("feed");
+    newsEvents=normalizeNews(await r.json());
+    newsStatus.textContent="LIVE";
+    newsStatus.style.color="#75d04a";
+    updateNews();
+  }catch(e){
+    newsName.textContent="News feed unavailable";
+    newsTime.textContent="";
+    newsCountdown.textContent="";
+    newsStatus.textContent="CHECK FEED";
+    newsStatus.style.color="#ff9c9c";
+  }
+}
+function updateNews(){
+  const now=Date.now();
+  newsEvents=newsEvents.filter(e=>e.time.getTime()>now-120000);
+  if(!newsEvents.length){
+    newsName.textContent="No upcoming high-impact US event found";
+    newsTime.textContent="";
+    newsCountdown.textContent="";
+    newsStatus.textContent="CALENDAR";
+    return;
+  }
+  const e=newsEvents[0], diff=e.time.getTime()-now;
+  newsName.textContent=e.name;
+  newsTime.textContent=formatIST(e.time);
+  newsCountdown.textContent=diff<=0?"NOW":"IN "+countdown(diff);
+  if(diff<=1800000&&diff>0){newsStatus.textContent="⚠ NEAR";newsStatus.style.color="#ff7777"}
+  else if(diff<=0){newsStatus.textContent="RELEASED";newsStatus.style.color="#ff7777"}
+  else{newsStatus.textContent="LIVE";newsStatus.style.color="#75d04a"}
+}
+loadNews();
+setInterval(updateNews,1000);
+setInterval(loadNews,300000);
+
 </script>
 
 </body>
