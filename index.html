@@ -1292,7 +1292,7 @@ footer{
 
     <div>
       <label class="field-label">Micros</label>
-      <input id="pnlMicros" class="pnl-input" type="number" min="1" step="1" value="1">
+      <input id="pnlMicros" class="pnl-input" type="number" min="0" step="1" value="1">
     </div>
 
   </div>
@@ -1322,8 +1322,9 @@ footer{
   </div>
 
   <div class="pnl-helper">
-    Loss and profit are calculated from the selected instrument's contract multiplier.
-    Change SL/TP while trailing and the dollar values update instantly.
+    Side (BUY/SELL), Entry, Stop Loss, calculated Micros and TP2 sync automatically
+    from Position Size Calculator. BUY is selected when SL is below Entry; SELL
+    is selected when SL is above Entry. P&L updates instantly.
   </div>
 
 </section>
@@ -1750,6 +1751,9 @@ function calculateAll(){
   document.getElementById("summaryTarget").textContent = money(target);
   document.getElementById("summaryMicros").textContent = totalMicros;
   document.getElementById("summaryActual").textContent = money(totalActual);
+
+  // Keep Trade P&L synced with the current Position Size Calculator inputs.
+  syncPnlFromInstrument();
 }
 
 
@@ -1770,21 +1774,36 @@ function syncPnlFromInstrument(){
 
   const entry = parseFloat(tr.querySelector(".entry").value);
   const sl = parseFloat(tr.querySelector(".sl").value);
+  const microsText = document.getElementById("micros-0")?.textContent ?? "";
+  const micros = parseInt(microsText, 10);
 
-  if(!Number.isFinite(entry) || !Number.isFinite(sl)) return;
+  if(!Number.isFinite(entry) || !Number.isFinite(sl)){
+    pnlEntry.value = "";
+    pnlSL.value = "";
+    pnlTP.value = "";
+    pnlMicros.value = 0;
+    calculatePnl();
+    return;
+  }
 
   pnlEntry.value = entry;
   pnlSL.value = sl;
 
-  /* Keep the existing trade direction and create a default 1:2 TP. */
+  // Use the Position Size Calculator's calculated contract quantity.
+  pnlMicros.value = Number.isFinite(micros) ? micros : 0;
+
+  // TP in Trade P&L is the same 1:2 target (TP2) calculated above.
   const distance = Math.abs(entry - sl);
 
-  if(sl < entry){
+  if(sl > entry){
+    pnlSide.value = "sell";
+    pnlTP.value = entry - distance * 2;
+  }else if(sl < entry){
     pnlSide.value = "buy";
     pnlTP.value = entry + distance * 2;
   }else{
-    pnlSide.value = "sell";
-    pnlTP.value = entry - distance * 2;
+    pnlSide.value = "buy";
+    pnlTP.value = entry;
   }
 
   calculatePnl();
