@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="description" content="MicroRiskTrader Futures Risk & Position Size Calculator">
+
+<title>MicroRiskTrader | Futures Risk Calculator</title>
+
+<style>
+
+:root{
+  --bg:#05080d;
+  --panel:#0a1119;
+  --panel2:#0d1721;
+  --line:#1d2b38;
+  --line2:#293b4b;
+
+  --text:#f3f6f8;
+  --muted:#8192a3;
+
+  --gold:#d7aa3a;
+  --gold2:#f0c75e;
+  --gold-soft:rgba(215,170,58,.12);
+
+  --green:#75d04a;
+  --green-soft:rgba(117,208,74,.11);
+
+  --red:#ff7777;
+  --red-soft:rgba(255,119,119,.10);
+}
+
+
+*{
+  box-sizing:border-box;
+}
+
+
+html{
+  scroll-behavior:smooth;
+}
+
+
+body{
+  margin:0;
+
+  font-family:
+    Inter,
+    Segoe UI,
+    Arial,
+    sans-serif;
+
+  background:
+    radial-gradient(
+      circle at 50% -10%,
+      rgba(215,170,58,.08),
+      transparent 34%
+    ),
+    var(--bg);
+
+  color:var(--text);
+
+  min-height:100vh;
+}
+
+
+/* =====================================
+   TOP BANNER
+===================================== */
+
+.top-banner{
+  width:100%;
+
+  background:#000;
+
+  border-bottom:
+    1px solid #2b2414;
+
+  overflow:hidden;
+}
+
+
+.top-banner img{
+  display:block;
+
+  width:100%;
+
+  max-height:330px;
+
+  object-fit:cover;
+
+  object-position:center;
+}
+
+
+/* =====================================
+   NAVIGATION
+===================================== */
+
+.nav{
+  height:58px;
+
+  border-bottom:
+    1px solid var(--line);
+
+  background:
+    rgba(5,8,13,.94);
+
+  display:flex;
+
+  align-items:center;
+
+  position:sticky;
+
+  top:0;
+
+  z-index:20;
+
+  backdrop-filter:blur(12px);
+}
+
+
+.nav-inner{
+  width:
+    min(
+      1180px,
+      calc(100% - 36px)
+    );
+
+  margin:auto;
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+}
+
+
+.logo{
+  font-weight:900;
+
+  letter-spacing:.5px;
+
+  font-size:16px;
+}
+
+
+.logo span{
+  color:var(--gold2);
+}
+
+
+.nav-right{
+  display:flex;
+
+  gap:22px;
+
+  color:var(--muted);
+
+  font-size:10px;
+
+  font-weight:800;
+
+  letter-spacing:.8px;
+}
+
+
+/* =====================================
+   MAIN WRAPPER
+===================================== */
+
+.wrap{
+  width:
+    min(
+      1180px,
+      calc(100% - 36px)
+    );
+
+  margin:auto;
+
+  padding:
+    42px 0 60px;
+}
+
+
+/* =====================================
+   HERO
+===================================== */
+
+.hero{
+  display:flex;
+
+  justify-content:space-between;
+
+  gap:30px;
+
+  align-items:flex-end;
+
+  margin-bottom:28px;
+}
+
+
+.eyebrow{
+  color:var(--gold2);
+
+  font-size:11px;
+
+  font-weight:900;
+
+  letter-spacing:2px;
+
+  text-transform:uppercase;
+
+  margin-bottom:10px;
+}
+
+
+h1{
+  margin:0;
+
+  font-size:
+    clamp(
+      30px,
+      4vw,
+      48px
+    );
+
+  line-height:1.02;
+
+  letter-spacing:-1.4px;
+}
+
+
+.hero p{
+  margin:
+    13px 0 0;
+
+  color:var(--muted);
+
+  font-size:14px;
+}
+
+
+/* =====================================
+   TARGET RISK CARD
+===================================== */
+
+.risk-card{
+  width:240px;
+
+  flex:none;
+
+  padding:15px;
+
+  border:
+    1px solid #4b3a18;
+
+  border-radius:14px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #15130e,
+      #0a1119
+    );
+
+  box-shadow:
+    0 12px 35px
+    rgba(0,0,0,.25);
+}
+
+
+.risk-label{
+  color:#bca76f;
+
+  font-size:10px;
+
+  font-weight:800;
+
+  letter-spacing:1px;
+
+  text-transform:uppercase;
+
+  margin-bottom:8px;
+}
+
+
+.risk-input{
+  display:flex;
+
+  align-items:center;
+
+  gap:8px;
+}
+
+
+.risk-input span{
+  color:var(--gold2);
+
+  font-size:20px;
+
+  font-weight:900;
+}
+
+
+.risk-input input{
+  width:100%;
+
+  background:transparent;
+
+  border:0;
+
+  outline:0;
+
+  color:white;
+
+  font-size:25px;
+
+  font-weight:900;
+}
+
+
+/* =====================================
+   CONTRACT CARDS
+===================================== */
+
+.stats{
+  display:grid;
+
+  grid-template-columns:
+    repeat(5,1fr);
+
+  gap:10px;
+
+  margin-bottom:18px;
+}
+
+
+.stat{
+  border:
+    1px solid var(--line);
+
+  background:
+    linear-gradient(
+      145deg,
+      #0c151e,
+      #081018
+    );
+
+  border-radius:12px;
+
+  padding:
+    13px 14px;
+
+  transition:
+    transform .2s ease,
+    border-color .2s ease;
+}
+
+
+.stat:hover{
+  transform:
+    translateY(-2px);
+
+  border-color:
+    #4d401f;
+}
+
+
+.stat-symbol{
+  font-size:14px;
+
+  font-weight:900;
+
+  color:white;
+}
+
+
+.stat-desc{
+  margin-top:5px;
+
+  color:var(--muted);
+
+  font-size:11px;
+}
+
+
+.stat-value{
+  margin-top:7px;
+
+  color:var(--gold2);
+
+  font-size:12px;
+
+  font-weight:800;
+}
+
+
+/* =====================================
+   SECTION HEADER
+===================================== */
+
+.section-head{
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  margin:
+    34px 0 12px;
+}
+
+
+.section-title{
+  font-size:17px;
+
+  font-weight:900;
+}
+
+
+.section-sub{
+  color:var(--muted);
+
+  font-size:11px;
+
+  margin-top:4px;
+}
+
+
+/* =====================================
+   CALCULATOR
+===================================== */
+
+.calculator{
+  border:
+    1px solid var(--line2);
+
+  border-radius:16px;
+
+  overflow:hidden;
+
+  background:var(--panel);
+
+  box-shadow:
+    0 18px 55px
+    rgba(0,0,0,.28);
+}
+
+
+.scroll{
+  overflow-x:auto;
+}
+
+
+table{
+  width:100%;
+
+  min-width:1120px;
+
+  border-collapse:collapse;
+}
+
+
+th{
+  text-align:center;
+
+  padding:
+    14px 10px;
+
+  background:#101c27;
+
+  color:#8295a7;
+
+  font-size:10px;
+
+  letter-spacing:.8px;
+
+  text-transform:uppercase;
+
+  border-bottom:
+    1px solid var(--line2);
+
+  white-space:nowrap;
+}
+
+
+td{
+  text-align:center;
+
+  padding:
+    12px 9px;
+
+  border-bottom:
+    1px solid var(--line);
+
+  white-space:nowrap;
+}
+
+
+tbody tr:last-child td{
+  border-bottom:0;
+}
+
+
+tbody tr:hover{
+  background:
+    rgba(255,255,255,.018);
+}
+
+
+/* =====================================
+   INSTRUMENT
+===================================== */
+
+.instrument{
+  font-size:14px;
+
+  font-weight:950;
+}
+
+
+.multiplier{
+  color:var(--muted);
+
+  font-size:10px;
+
+  margin-top:4px;
+}
+
+
+.badge{
+  display:inline-flex;
+
+  margin-top:6px;
+
+  padding:
+    3px 7px;
+
+  border-radius:20px;
+
+  font-size:9px;
+
+  font-weight:900;
+
+  letter-spacing:.3px;
+}
+
+
+.long{
+  color:#9bea72;
+
+  background:
+    var(--green-soft);
+}
+
+
+.short{
+  color:#ff9c9c;
+
+  background:
+    var(--red-soft);
+}
+
+
+/* =====================================
+   INPUTS
+===================================== */
+
+.input-wrap{
+  background:
+    linear-gradient(
+      90deg,
+      rgba(117,208,74,.10),
+      rgba(117,208,74,.035)
+    );
+}
+
+
+.input{
+  width:126px;
+
+  border:
+    1px solid #63822f;
+
+  background:#fff0a0;
+
+  color:#111;
+
+  border-radius:7px;
+
+  padding:
+    9px 9px;
+
+  text-align:right;
+
+  font-size:13px;
+
+  font-weight:850;
+
+  outline:none;
+}
+
+
+.input:focus{
+  border-color:
+    var(--gold2);
+
+  box-shadow:
+    0 0 0 2px
+    rgba(240,199,94,.15);
+}
+
+
+.target-input{
+  background:#ffe680;
+}
+
+
+/* =====================================
+   OUTPUTS
+===================================== */
+
+.distance{
+  font-weight:800;
+}
+
+
+.rpm{
+  font-weight:800;
+
+  color:#dce6ee;
+}
+
+
+.micros{
+  color:var(--green);
+
+  font-size:19px;
+
+  font-weight:950;
+}
+
+
+.actual{
+  font-size:14px;
+
+  font-weight:900;
+}
+
+
+.tp{
+  color:var(--gold2);
+
+  font-size:15px;
+
+  font-weight:950;
+}
+
+
+/* =====================================
+   SUMMARY CARDS
+===================================== */
+
+.status-row{
+  display:grid;
+
+  grid-template-columns:
+    repeat(3,1fr);
+
+  gap:12px;
+
+  margin-top:16px;
+}
+
+
+.status-card{
+  padding:15px;
+
+  border:
+    1px solid var(--line);
+
+  background:var(--panel2);
+
+  border-radius:12px;
+}
+
+
+.status-label{
+  color:var(--muted);
+
+  font-size:10px;
+
+  text-transform:uppercase;
+
+  letter-spacing:1px;
+}
+
+
+.status-value{
+  margin-top:6px;
+
+  font-size:18px;
+
+  font-weight:900;
+}
+
+
+.status-value.gold{
+  color:var(--gold2);
+}
+
+
+.status-value.green{
+  color:var(--green);
+}
+
+
+/* =====================================
+   NOTE
+===================================== */
+
+.note{
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  gap:15px;
+
+  margin-top:12px;
+
+  color:#718293;
+
+  font-size:11px;
+}
+
+
+.reset{
+  border:
+    1px solid var(--line2);
+
+  background:#0b141d;
+
+  color:#b8c6d1;
+
+  padding:
+    8px 12px;
+
+  border-radius:8px;
+
+  cursor:pointer;
+
+  font-size:11px;
+
+  font-weight:800;
+}
+
+
+.reset:hover{
+  border-color:#695323;
+
+  color:var(--gold2);
+}
+
+
+/* =====================================
+   HOW IT WORKS
+===================================== */
+
+.info-grid{
+  display:grid;
+
+  grid-template-columns:
+    repeat(3,1fr);
+
+  gap:12px;
+
+  margin-top:38px;
+}
+
+
+.info{
+  border:
+    1px solid var(--line);
+
+  border-radius:13px;
+
+  padding:20px;
+
+  background:#09111a;
+}
+
+
+.info-number{
+  color:var(--gold2);
+
+  font-size:11px;
+
+  font-weight:900;
+
+  letter-spacing:1px;
+}
+
+
+.info h3{
+  margin:
+    9px 0 7px;
+
+  font-size:14px;
+}
+
+
+.info p{
+  margin:0;
+
+  color:var(--muted);
+
+  font-size:11px;
+
+  line-height:1.6;
+}
+
+
+/* =====================================
+   FOOTER
+===================================== */
+
+footer{
+  border-top:
+    1px solid var(--line);
+
+  margin-top:45px;
+
+  padding:
+    24px 0 5px;
+
+  display:flex;
+
+  justify-content:space-between;
+
+  gap:20px;
+
+  color:#687989;
+
+  font-size:10px;
+}
+
+
+.footer-brand{
+  color:#c3ced7;
+
+  font-weight:900;
+}
+
+
+.footer-brand span{
+  color:var(--gold2);
+}
+
+
+/* =====================================
+   MOBILE
+===================================== */
+
+@media(max-width:800px){
+
+  .top-banner img{
+    max-height:250px;
+  }
+
+  .nav-right{
+    display:none;
+  }
+
+  .hero{
+    flex-direction:column;
+
+    align-items:stretch;
+  }
+
+  .risk-card{
+    width:100%;
+  }
+
+  .stats{
+    grid-template-columns:
+      repeat(2,1fr);
+  }
+
+  .status-row{
+    grid-template-columns:1fr;
+  }
+
+  .info-grid{
+    grid-template-columns:1fr;
+  }
+
+  footer{
+    flex-direction:column;
+  }
+
+}
+
+
+@media(max-width:500px){
+
+  .wrap,
+  .nav-inner{
+    width:
+      min(
+        100% - 24px,
+        1180px
+      );
+  }
+
+  .wrap{
+    padding-top:28px;
+  }
+
+  h1{
+    font-size:31px;
+  }
+
+  .stats{
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+}
+
+
+/* =====================================
+   INSTRUMENT SELECTOR
+===================================== */
+.instrument-selector{
+  border:1px solid var(--line2);
+  border-radius:16px;
+  background:var(--panel);
+  padding:14px;
+  box-shadow:0 18px 55px rgba(0,0,0,.20);
+}
+.instrument-select{
+  width:100%;
+  appearance:none;
+  -webkit-appearance:none;
+  border:1px solid var(--line2);
+  border-radius:11px;
+  background:
+    linear-gradient(45deg,transparent 50%,var(--gold2) 50%) calc(100% - 22px) 50%/7px 7px no-repeat,
+    linear-gradient(135deg,var(--gold2) 50%,transparent 50%) calc(100% - 17px) 50%/7px 7px no-repeat,
+    #0d1721;
+  color:var(--text);
+  padding:14px 44px 14px 15px;
+  font-size:14px;
+  font-weight:850;
+  outline:none;
+  cursor:pointer;
+}
+.instrument-select:focus{
+  border-color:var(--gold2);
+  box-shadow:0 0 0 2px rgba(240,199,94,.12);
+}
+.instrument-meta{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:10px;
+  color:var(--muted);
+  font-size:11px;
+}
+.instrument-meta strong{color:var(--gold2)}
+
+/* =====================================
+   P&L CALCULATOR
+===================================== */
+.pnl-card{
+  border:1px solid var(--line2);
+  border-radius:16px;
+  background:var(--panel);
+  padding:18px;
+  box-shadow:0 18px 55px rgba(0,0,0,.20);
+}
+.pnl-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:12px;
+}
+.field-label{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  font-weight:850;
+  letter-spacing:.8px;
+  text-transform:uppercase;
+  margin-bottom:7px;
+}
+.pnl-input,.side-select{
+  width:100%;
+  border:1px solid #526678;
+  background:#fff0a0;
+  color:#111;
+  border-radius:8px;
+  padding:11px 10px;
+  font-size:13px;
+  font-weight:850;
+  outline:none;
+}
+.side-select{background:#0d1721;color:var(--text);border-color:var(--line2)}
+.pnl-input:focus,.side-select:focus{
+  border-color:var(--gold2);
+  box-shadow:0 0 0 2px rgba(240,199,94,.12);
+}
+.pnl-results{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-top:14px;
+}
+.pnl-result{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:14px;
+  background:var(--panel2);
+}
+.pnl-result-label{
+  color:var(--muted);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.8px;
+}
+.pnl-result-value{
+  margin-top:6px;
+  font-size:19px;
+  font-weight:950;
+}
+.pnl-result-value.loss{color:var(--red)}
+.pnl-result-value.profit{color:var(--green)}
+.pnl-result-value.gold{color:var(--gold2)}
+.pnl-helper{
+  margin-top:11px;
+  color:#718293;
+  font-size:11px;
+  line-height:1.5;
+}
+
+@media(max-width:800px){
+  .pnl-grid{grid-template-columns:1fr 1fr}
+  .pnl-results{grid-template-columns:1fr 1fr}
+}
+@media(max-width:500px){
+  .pnl-grid,.pnl-results{grid-template-columns:1fr}
+}
+
+
+.news-ticker{width:100%;background:#260b0b;border-bottom:1px solid #7d2222;color:#fff;overflow:hidden}
+.news-ticker-inner{width:min(1180px,calc(100% - 36px));min-height:38px;margin:auto;display:flex;align-items:center;gap:12px}
+.news-label{flex:none;display:flex;align-items:center;gap:7px;color:#ff8585;font-size:10px;font-weight:950;letter-spacing:1px;white-space:nowrap}
+.news-dot{width:7px;height:7px;border-radius:50%;background:#ff4d4d;box-shadow:0 0 10px rgba(255,77,77,.75);animation:newsPulse 1.2s infinite}
+@keyframes newsPulse{0%,100%{opacity:1}50%{opacity:.35}}
+.news-event{min-width:0;flex:1;display:flex;align-items:center;justify-content:space-between;gap:14px;font-size:11px}
+.news-event-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:850}
+.news-event-time{flex:none;color:#ffb1b1;font-weight:900;white-space:nowrap}
+.news-countdown{flex:none;color:#fff;font-variant-numeric:tabular-nums;font-weight:950;white-space:nowrap}
+.news-status{color:#9a6d6d;font-size:9px;white-space:nowrap}
+@media(max-width:600px){.news-ticker-inner{width:calc(100% - 24px)}.news-status{display:none}.news-event{gap:8px}}
+
+</style>
+</head>
+
+
+<body>
+
+
+
+<!-- =====================================
+     NAVIGATION
+===================================== -->
+
+
+<div class="news-ticker">
+  <div class="news-ticker-inner">
+    <div class="news-label"><span class="news-dot"></span>HIGH IMPACT NEWS</div>
+    <div class="news-event">
+      <span class="news-event-name" id="newsName">Loading US economic calendar...</span>
+      <span class="news-event-time" id="newsTime">--:-- IST</span>
+      <span class="news-countdown" id="newsCountdown">--:--:--</span>
+    </div>
+    <span class="news-status" id="newsStatus">LIVE</span>
+  </div>
+</div>
+
+<nav class="nav">
+
+  <div class="nav-inner">
+
+    <div class="logo">
+      Micro<span>Risk</span>Trader
+    </div>
+
+
+    <div class="nav-right">
+
+      <span>FUTURES</span>
+
+      <span>RISK MANAGEMENT</span>
+
+      <span>POSITION SIZING</span>
+
+    </div>
+
+  </div>
+
+</nav>
+
+
+
+<!-- =====================================
+     MAIN
+===================================== -->
+
+<main class="wrap">
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+  <div>
+
+    <div class="eyebrow">
+      Professional Futures Risk Tool
+    </div>
+
+
+    <h1>
+      Futures Risk<br>
+      Calculator
+    </h1>
+
+
+    <p>
+      Calculate position size, actual risk
+      and 1:2 targets before you trade.
+    </p>
+
+  </div>
+
+
+
+  <!-- TARGET RISK -->
+
+  <div class="risk-card">
+
+    <div class="risk-label">
+      Global Target Risk
+    </div>
+
+
+    <div class="risk-input">
+
+      <span>$</span>
+
+      <input
+        id="globalRisk"
+        type="number"
+        min="0"
+        step="0.01"
+        value="500"
+      >
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- =====================================
+     INSTRUMENT SELECTOR
+===================================== -->
+
+<section class="instrument-selector">
+
+  <select id="instrumentSelect" class="instrument-select">
+    <option value="MNQ">MNQ — Micro Nasdaq-100</option>
+    <option value="MES">MES — Micro S&amp;P 500</option>
+    <option value="MGC">MGC — Micro Gold</option>
+    <option value="MYM">MYM — Micro Dow</option>
+    <option value="MCL">MCL — Micro Crude Oil</option>
+    <option value="M2K">M2K — Micro Russell 2000</option>
+  </select>
+
+  <div class="instrument-meta">
+    <span id="instrumentDescription">Micro Nasdaq-100</span>
+    <span><strong id="instrumentMultiplier">$2.00 / 1.00 move</strong></span>
+  </div>
+
+</section>
+
+
+
+<!-- =====================================
+     CALCULATOR HEADER
+===================================== -->
+
+<div class="section-head">
+
+  <div>
+    <div class="section-title">
+      Position Size Calculator
+    </div>
+
+    <div class="section-sub">
+      Select one instrument and calculate position size from Entry, Stop Loss and Target Risk.
+    </div>
+  </div>
+
+</div>
+
+<section class="calculator">
+
+  <div class="scroll">
+
+    <table>
+      <thead>
+        <tr>
+          <th>Instrument</th>
+          <th>Entry Price</th>
+          <th>SL Price</th>
+          <th>Target Risk</th>
+          <th>Distance</th>
+          <th>$ / 1.00 Move</th>
+          <th>Risk / Micro</th>
+          <th>Micros</th>
+          <th>Actual Risk</th>
+          <th>TP 1:2</th>
+        </tr>
+      </thead>
+
+      <tbody id="rows"></tbody>
+    </table>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================
+     TRADE P&L CALCULATOR
+===================================== -->
+
+<div class="section-head">
+  <div>
+    <div class="section-title">Trade P&amp;L Calculator</div>
+    <div class="section-sub">
+      Enter Buy/Sell price, Stop Loss, Take Profit and Micro contracts to see exact loss and profit.
+    </div>
+  </div>
+</div>
+
+<section class="pnl-card">
+
+  <div class="pnl-grid">
+
+    <div>
+      <label class="field-label">Side</label>
+      <select id="pnlSide" class="side-select">
+        <option value="buy">BUY</option>
+        <option value="sell">SELL</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="field-label">Buy / Sell Price</label>
+      <input id="pnlEntry" class="pnl-input" type="number" step="any" placeholder="Entry price">
+    </div>
+
+    <div>
+      <label class="field-label">Stop Loss</label>
+      <input id="pnlSL" class="pnl-input" type="number" step="any" placeholder="SL price">
+    </div>
+
+    <div>
+      <label class="field-label">Take Profit</label>
+      <input id="pnlTP" class="pnl-input" type="number" step="any" placeholder="TP price">
+    </div>
+
+    <div>
+      <label class="field-label">Micros</label>
+      <input id="pnlMicros" class="pnl-input" type="number" min="0" step="1" value="1">
+    </div>
+
+  </div>
+
+  <div class="pnl-results">
+
+    <div class="pnl-result">
+      <div class="pnl-result-label">SL Loss</div>
+      <div class="pnl-result-value loss" id="pnlLoss">$0.00</div>
+    </div>
+
+    <div class="pnl-result">
+      <div class="pnl-result-label">TP Profit</div>
+      <div class="pnl-result-value profit" id="pnlProfit">$0.00</div>
+    </div>
+
+    <div class="pnl-result">
+      <div class="pnl-result-label">Risk Distance</div>
+      <div class="pnl-result-value gold" id="pnlRiskDistance">0.00</div>
+    </div>
+
+    <div class="pnl-result">
+      <div class="pnl-result-label">Reward Distance</div>
+      <div class="pnl-result-value gold" id="pnlRewardDistance">0.00</div>
+    </div>
+
+  </div>
+
+  <div class="pnl-helper">
+    Side (BUY/SELL), Entry, Stop Loss, calculated Micros and TP2 sync automatically
+    from Position Size Calculator. BUY is selected when SL is below Entry; SELL
+    is selected when SL is above Entry. P&L updates instantly.
+  </div>
+
+</section>
+
+
+<!-- =====================================
+     SUMMARY
+===================================== -->
+
+<section class="status-row">
+
+
+  <div class="status-card">
+
+    <div class="status-label">
+      Default Risk Budget
+    </div>
+
+    <div
+      class="status-value gold"
+      id="summaryTarget"
+    >
+      $500.00
+    </div>
+
+  </div>
+
+
+
+  <div class="status-card">
+
+    <div class="status-label">
+      Selected Micros
+    </div>
+
+    <div
+      class="status-value green"
+      id="summaryMicros"
+    >
+      0
+    </div>
+
+  </div>
+
+
+
+  <div class="status-card">
+
+    <div class="status-label">
+      Combined Actual Risk
+    </div>
+
+    <div
+      class="status-value"
+      id="summaryActual"
+    >
+      $0.00
+    </div>
+
+  </div>
+
+
+</section>
+
+
+
+<!-- NOTE -->
+
+<div class="note">
+
+  <span>
+    Micros use floor sizing so calculated
+    Actual Risk does not exceed Target Risk.
+  </span>
+
+
+  <button
+    class="reset"
+    id="resetBtn"
+  >
+    Reset Inputs
+  </button>
+
+</div>
+
+
+
+<!-- =====================================
+     HOW IT WORKS
+===================================== -->
+
+<section class="info-grid">
+
+
+  <div class="info">
+
+    <div class="info-number">
+      01 — INPUT
+    </div>
+
+    <h3>
+      Set your trade
+    </h3>
+
+    <p>
+      Enter your planned Entry Price,
+      Stop Loss and the maximum dollar
+      amount you are willing to risk.
+    </p>
+
+  </div>
+
+
+
+  <div class="info">
+
+    <div class="info-number">
+      02 — CALCULATE
+    </div>
+
+    <h3>
+      Size the position
+    </h3>
+
+    <p>
+      The calculator determines price
+      distance, risk per micro and the
+      maximum number of contracts within
+      your risk budget.
+    </p>
+
+  </div>
+
+
+
+  <div class="info">
+
+    <div class="info-number">
+      03 — PLAN
+    </div>
+
+    <h3>
+      Trade with structure
+    </h3>
+
+    <p>
+      Direction and a 1:2 risk-to-reward
+      target are calculated automatically
+      from your Entry and Stop Loss.
+    </p>
+
+  </div>
+
+
+</section>
+
+
+
+<!-- =====================================
+     FOOTER
+===================================== -->
+
+<footer>
+
+  <div>
+
+    <div class="footer-brand">
+      Micro<span>Risk</span>Trader
+    </div>
+
+    <div>
+      Futures Risk &amp; Position Size Calculator
+    </div>
+
+  </div>
+
+
+  <div>
+    DISCIPLINE · STRATEGY · CONSISTENCY
+  </div>
+
+</footer>
+
+
+</main>
+
+
+
+<!-- =====================================
+     JAVASCRIPT
+===================================== -->
+
+<script>
+
+
+const contracts = [
+  {
+    name:"MNQ",
+    description:"Micro Nasdaq-100",
+    multiplier:2,
+    decimals:2,
+    entry:29563.50,
+    sl:29534.05
+  },
+  {
+    name:"MES",
+    description:"Micro S&P 500",
+    multiplier:5,
+    decimals:2,
+    entry:7690.75,
+    sl:7708.00
+  },
+  {
+    name:"MGC",
+    description:"Micro Gold",
+    multiplier:10,
+    decimals:2,
+    entry:4404.20,
+    sl:4395.00
+  },
+  {
+    name:"MYM",
+    description:"Micro Dow",
+    multiplier:0.5,
+    decimals:0,
+    entry:52882,
+    sl:52920
+  },
+  {
+    name:"MCL",
+    description:"Micro Crude Oil",
+    multiplier:100,
+    decimals:2,
+    entry:94.30,
+    sl:94.66
+  },
+  {
+    name:"M2K",
+    description:"Micro Russell 2000",
+    multiplier:5,
+    decimals:2,
+    entry:2200.00,
+    sl:2190.00
+  }
+];
+
+const rows = document.getElementById("rows");
+const globalRisk = document.getElementById("globalRisk");
+const instrumentSelect = document.getElementById("instrumentSelect");
+const instrumentDescription = document.getElementById("instrumentDescription");
+const instrumentMultiplier = document.getElementById("instrumentMultiplier");
+
+function selectedContract(){
+  return contracts.find(c => c.name === instrumentSelect.value) || contracts[0];
+}
+
+/* =====================================
+   MONEY FORMAT
+===================================== */
+
+function money(n){
+
+  return "$" +
+    n.toLocaleString(
+      "en-US",
+      {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    );
+
+}
+
+
+
+/* =====================================
+   NUMBER FORMAT
+===================================== */
+
+function numberFormat(n,decimals){
+
+  return n.toLocaleString(
+    "en-US",
+    {
+      minimumFractionDigits:decimals,
+      maximumFractionDigits:decimals
+    }
+  );
+
+}
+
+
+
+/* =====================================
+   RENDER
+===================================== */
+
+function render(){
+
+  const c = selectedContract();
+
+  instrumentDescription.textContent = c.description;
+  instrumentMultiplier.textContent = "$" + numberFormat(c.multiplier,2) + " / 1.00 move";
+
+  rows.innerHTML = "";
+
+  const tr = document.createElement("tr");
+  tr.dataset.i = contracts.indexOf(c);
+
+  tr.innerHTML = `
+
+    <td>
+      <div class="instrument">${c.name}</div>
+      <div class="multiplier">${c.description}</div>
+      <div class="badge" id="dir-0">—</div>
+    </td>
+
+    <td class="input-wrap">
+      <input class="input entry" type="number" step="any" value="${c.entry}">
+    </td>
+
+    <td class="input-wrap">
+      <input class="input sl" type="number" step="any" value="${c.sl}">
+    </td>
+
+    <td class="input-wrap">
+      <input class="input target-input risk" type="number" min="0" step="0.01" value="${globalRisk.value}">
+    </td>
+
+    <td class="distance" id="dist-0">—</td>
+
+    <td class="rpm">$${numberFormat(c.multiplier,2)}</td>
+
+    <td class="rpm" id="rpm-0">—</td>
+
+    <td class="micros" id="micros-0">—</td>
+
+    <td class="actual" id="actual-0">—</td>
+
+    <td class="tp" id="tp-0">—</td>
+
+  `;
+
+  rows.appendChild(tr);
+
+  document.querySelectorAll(".entry,.sl,.risk").forEach(el=>{
+    el.addEventListener("input", calculateAll);
+  });
+
+  calculateAll();
+  syncPnlFromInstrument();
+}
+
+
+/* =====================================
+   CALCULATE POSITION SIZE
+===================================== */
+
+function calculateAll(){
+
+  const target = parseFloat(globalRisk.value) || 0;
+  const tr = rows.querySelector("tr[data-i]");
+
+  let totalMicros = 0;
+  let totalActual = 0;
+
+  if(tr){
+
+    const i = Number(tr.dataset.i);
+    const c = contracts[i];
+
+    const entry = parseFloat(tr.querySelector(".entry").value);
+    const sl = parseFloat(tr.querySelector(".sl").value);
+    const risk = parseFloat(tr.querySelector(".risk").value) || 0;
+
+    if(Number.isFinite(entry) && Number.isFinite(sl)){
+
+      const distance = Math.abs(entry - sl);
+      const riskPerMicro = distance * c.multiplier;
+
+      const micros = riskPerMicro > 0
+        ? Math.floor(risk / riskPerMicro)
+        : 0;
+
+      const actualRisk = micros * riskPerMicro;
+
+      let direction = "—";
+      let tp = entry;
+
+      if(sl < entry){
+        direction = "LONG";
+        tp = entry + distance * 2;
+      } else if(sl > entry){
+        direction = "SHORT";
+        tp = entry - distance * 2;
+      }
+
+      document.getElementById("dist-0").textContent =
+        numberFormat(distance,c.decimals);
+
+      document.getElementById("rpm-0").textContent =
+        money(riskPerMicro);
+
+      document.getElementById("micros-0").textContent = micros;
+
+      document.getElementById("actual-0").textContent =
+        money(actualRisk);
+
+      document.getElementById("tp-0").textContent =
+        numberFormat(tp,c.decimals);
+
+      const badge = document.getElementById("dir-0");
+      badge.textContent = direction;
+      badge.className =
+        "badge " +
+        (direction === "LONG" ? "long" :
+         direction === "SHORT" ? "short" : "");
+
+      totalMicros = micros;
+      totalActual = actualRisk;
+    }
+  }
+
+  document.getElementById("summaryTarget").textContent = money(target);
+  document.getElementById("summaryMicros").textContent = totalMicros;
+  document.getElementById("summaryActual").textContent = money(totalActual);
+
+  // Keep Trade P&L synced with the current Position Size Calculator inputs.
+  syncPnlFromInstrument();
+}
+
+
+/* =====================================
+   TRADE P&L CALCULATOR
+===================================== */
+
+const pnlSide = document.getElementById("pnlSide");
+const pnlEntry = document.getElementById("pnlEntry");
+const pnlSL = document.getElementById("pnlSL");
+const pnlTP = document.getElementById("pnlTP");
+const pnlMicros = document.getElementById("pnlMicros");
+
+function syncPnlFromInstrument(){
+
+  const tr = rows.querySelector("tr[data-i]");
+  if(!tr) return;
+
+  const entry = parseFloat(tr.querySelector(".entry").value);
+  const sl = parseFloat(tr.querySelector(".sl").value);
+  const microsText = document.getElementById("micros-0")?.textContent ?? "";
+  const micros = parseInt(microsText, 10);
+
+  if(!Number.isFinite(entry) || !Number.isFinite(sl)){
+    pnlEntry.value = "";
+    pnlSL.value = "";
+    pnlTP.value = "";
+    pnlMicros.value = 0;
+    calculatePnl();
+    return;
+  }
+
+  pnlEntry.value = entry;
+  pnlSL.value = sl;
+
+  // Use the Position Size Calculator's calculated contract quantity.
+  pnlMicros.value = Number.isFinite(micros) ? micros : 0;
+
+  // TP in Trade P&L is the same 1:2 target (TP2) calculated above.
+  const distance = Math.abs(entry - sl);
+
+  if(sl > entry){
+    pnlSide.value = "sell";
+    pnlTP.value = entry - distance * 2;
+  }else if(sl < entry){
+    pnlSide.value = "buy";
+    pnlTP.value = entry + distance * 2;
+  }else{
+    pnlSide.value = "buy";
+    pnlTP.value = entry;
+  }
+
+  calculatePnl();
+}
+
+function calculatePnl(){
+
+  const c = selectedContract();
+  const entry = parseFloat(pnlEntry.value);
+  const sl = parseFloat(pnlSL.value);
+  const tp = parseFloat(pnlTP.value);
+  const micros = Math.max(0, parseInt(pnlMicros.value,10) || 0);
+
+  if(!Number.isFinite(entry) ||
+     !Number.isFinite(sl) ||
+     !Number.isFinite(tp)){
+
+    document.getElementById("pnlLoss").textContent = "$0.00";
+    document.getElementById("pnlProfit").textContent = "$0.00";
+    document.getElementById("pnlRiskDistance").textContent = "0.00";
+    document.getElementById("pnlRewardDistance").textContent = "0.00";
+    return;
+  }
+
+  const riskDistance = Math.abs(entry - sl);
+  const rewardDistance = Math.abs(tp - entry);
+
+  const loss = riskDistance * c.multiplier * micros;
+  const profit = rewardDistance * c.multiplier * micros;
+
+  document.getElementById("pnlLoss").textContent = "-" + money(loss);
+  document.getElementById("pnlProfit").textContent = "+" + money(profit);
+  document.getElementById("pnlRiskDistance").textContent =
+    numberFormat(riskDistance,c.decimals);
+  document.getElementById("pnlRewardDistance").textContent =
+    numberFormat(rewardDistance,c.decimals);
+}
+
+[pnlSide,pnlEntry,pnlSL,pnlTP,pnlMicros].forEach(el=>{
+  el.addEventListener("input", calculatePnl);
+  el.addEventListener("change", calculatePnl);
+});
+
+instrumentSelect.addEventListener("change", ()=>{
+  render();
+});
+
+globalRisk.addEventListener("input", ()=>{
+  const riskInputs = document.querySelectorAll(".risk");
+  riskInputs.forEach(el => el.value = globalRisk.value);
+  calculateAll();
+});
+
+document.getElementById("resetBtn").addEventListener("click", ()=>{
+  globalRisk.value = 500;
+  instrumentSelect.value = "MNQ";
+  pnlMicros.value = 1;
+  render();
+});
+
+render();
+
+const newsName=document.getElementById("newsName");
+const newsTime=document.getElementById("newsTime");
+const newsCountdown=document.getElementById("newsCountdown");
+const newsStatus=document.getElementById("newsStatus");
+let newsEvents=[];
+
+function parseNewsDate(v){const d=new Date(v);return Number.isNaN(d.getTime())?null:d}
+function formatIST(d){return new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",hour:"2-digit",minute:"2-digit",hour12:true}).format(d)+" IST"}
+function countdown(ms){
+  if(ms<=0)return "NOW";
+  const s=Math.floor(ms/1000),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),sec=s%60;
+  return d>0?`${d}d ${String(h).padStart(2,"0")}h`:`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+}
+function normalizeNews(data){
+  const list=Array.isArray(data)?data:(data.data||[]);
+  return list.map(e=>({
+    name:e.eventName||e.name||e.event||"US Economic Event",
+    time:parseNewsDate(e.scheduledAt||e.scheduled_at||e.time||e.datetime)
+  })).filter(e=>e.time&&e.time.getTime()>=Date.now()-60000).sort((a,b)=>a.time-b.time);
+}
+async function loadNews(){
+  try{
+    const r=await fetch("https://xoomar.com/api/markets/calendar?importance=high",{cache:"no-store"});
+    if(!r.ok)throw new Error("feed");
+    newsEvents=normalizeNews(await r.json());
+    newsStatus.textContent="LIVE";
+    newsStatus.style.color="#75d04a";
+    updateNews();
+  }catch(e){
+    newsName.textContent="News feed unavailable";
+    newsTime.textContent="";
+    newsCountdown.textContent="";
+    newsStatus.textContent="CHECK FEED";
+    newsStatus.style.color="#ff9c9c";
+  }
+}
+function updateNews(){
+  const now=Date.now();
+  newsEvents=newsEvents.filter(e=>e.time.getTime()>now-120000);
+  if(!newsEvents.length){
+    newsName.textContent="No upcoming high-impact US event found";
+    newsTime.textContent="";
+    newsCountdown.textContent="";
+    newsStatus.textContent="CALENDAR";
+    return;
+  }
+  const e=newsEvents[0], diff=e.time.getTime()-now;
+  newsName.textContent=e.name;
+  newsTime.textContent=formatIST(e.time);
+  newsCountdown.textContent=diff<=0?"NOW":"IN "+countdown(diff);
+  if(diff<=1800000&&diff>0){newsStatus.textContent="⚠ NEAR";newsStatus.style.color="#ff7777"}
+  else if(diff<=0){newsStatus.textContent="RELEASED";newsStatus.style.color="#ff7777"}
+  else{newsStatus.textContent="LIVE";newsStatus.style.color="#75d04a"}
+}
+loadNews();
+setInterval(updateNews,1000);
+setInterval(loadNews,300000);
+
+</script>
+
+</body>
+</html>
